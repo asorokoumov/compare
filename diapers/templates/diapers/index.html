@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<a href="{% url 'diapers:index' %}">index</a>
+<h1>{{ brand.name }}</h1>
+
+
+{% for brand in brands %}
+    <h1><a href="{% url 'diapers:brand' brand.id %}">{{ brand.name }}</a></h1>
+{% endfor %}
+
+</body>
+</html>

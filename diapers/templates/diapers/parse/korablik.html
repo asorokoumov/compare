@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+
+{% for price in price_after_discount %}
+    !{{ price.price_full }}!{{ price.price_unit }}! </br>
+{% endfor %}
+
+</body>
+</html>

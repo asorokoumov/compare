@@ -1,0 +1,1 @@
+1. Edit default encoding in lib/python2.7/site.py from "ascii" to "utf-8"

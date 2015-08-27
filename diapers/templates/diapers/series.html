@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <a href="{% url 'diapers:index' %}">index</a>
+    <h1><a href="{% url 'diapers:brand' brand.id %}">{{ brand.name }}</a></h1>
+    <h2>{{ series.name }}</h2>
+
+    <table border="1">
+        {% for product in products %}
+            {% for stock in product.stock_set.all %}
+                    <tr>
+                        <td><a href="{{ stock.seller.url }}{{ stock.url }}">{{ product.name }}</a></td>
+                        <td>{{ product.size }}</td>
+                        <td>{{ product.min_weight }}</td>
+                        <td>{{ product.max_weight }}</td>
+                        <td>{{ product.count }}</td>
+                        <td>{{ stock.price_full }}</td>
+                        <td>{{ stock.price_unit }}</td>
+                        <td>{{ stock.seller }}</td>
+                    </tr>
+
+            {% endfor %}
+        {% endfor %}
+    </table>
+</body>
+</html>
