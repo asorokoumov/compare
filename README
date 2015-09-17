@@ -1,1 +1,10 @@
-1. Edit default encoding in lib/python2.7/site.py from "ascii" to "utf-8"
+virtualenv env
+. env/bin/activate
+pip install -r requirements.txt
+edit default encoding in lib/python2.7/site.py from "ascii" to "utf-8"
+mysql.server start
+create user (config/default.conf)
+create database (config/default.conf)
+python manage.py migrate
+python manage.py runserver
+

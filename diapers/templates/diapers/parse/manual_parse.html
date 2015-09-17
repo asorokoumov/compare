@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    {% load staticfiles %}
+    <link rel="stylesheet" type="text/css" href="{% static 'diapers/css/bootstrap.min.css' %}" />
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="{% static 'diapers/js/bootstrap.min.js' %}"></script>
+    <!-- Suggest stuff -->
+    <script>
+        $(document).ready(function () {
+            $('select[name=series]').val({{ suggest_series }});
+            $('select[name=series]').change();
+
+            $('select[name=brand]').val({{ suggest_brand }});
+            $('select[name=brand]').change();
+
+            $('select[name=gender]').val({{ suggest_gender }});
+            $('select[name=gender]').change();
+
+    })
+
+    </script>
+    <div class="row">
+    <div class="col-md-2"></div>
+    <div class="col-md-8">
+        <form class="form-horizontal" action="{% url 'diapers:manual_parse_result' %}" method="post">
+            {% csrf_token %}
+            <fieldset>
+
+                <!-- Form Name -->
+                <legend>{{ progress_counter }} products left</legend>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="chosen_product_id">chosen_product_id</label>
+                  <div class="col-md-8">
+                  <a href="{{ chosen_product.seller.url}}{{chosen_product.url }}">
+                      {{ chosen_product.seller.url}}{{chosen_product.url }}</a>
+
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="chosen_product_id">chosen_product_id</label>
+                  <div class="col-md-8">
+                  <input id="chosen_product_id" name="chosen_product_id" type="text" placeholder="" class="form-control input-md"
+                         value="{{ chosen_product.id }}" readonly>
+
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="description">description</label>
+                  <div class="col-md-8">
+                  <input id="description" name="description" type="text" placeholder="" class="form-control input-md"
+                         value="{{ chosen_product.description }}" readonly>
+
+                  </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="brand">brand</label>
+                  <div class="col-md-8">
+                    <select id="brand" name="brand" class="form-control">
+                        {% for brand in all_brands %}
+                            <option value="{{ brand.id }}">{{ brand.name }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="series">series</label>
+                  <div class="col-md-8">
+                    <select id="series" name="series" class="form-control">
+                        {% for series in all_series %}
+                            <option value="{{ series.id }}">{{ series.name }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="type">type</label>
+                  <div class="col-md-8">
+                    <select id="type" name="type" class="form-control">
+                        {% for type in all_types %}
+                            <option value="{{ type.id }}">{{ type.type }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Select Basic -->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="gender">gender</label>
+                  <div class="col-md-8">
+                    <select id="gender" name="gender" class="form-control">
+                        {% for gender in all_genders %}
+                            <option value="{{ gender.id }}">{{ gender.gender }}</option>
+                        {% endfor %}
+                    </select>
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="size">size</label>
+                  <div class="col-md-8">
+                  <input id="size" name="size" type="text" placeholder="" class="form-control input-md"
+                          value="{{ suggest_size }}">
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="min_weight">min_weight</label>
+                  <div class="col-md-8">
+                  <input id="min_weight" name="min_weight" type="text" placeholder="" class="form-control input-md"
+                          value="{{ suggest_min_weight }}">
+
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="max_weight">max_weight</label>
+                  <div class="col-md-8">
+                  <input id="max_weight" name="max_weight" type="text" placeholder="" class="form-control input-md"
+                          value="{{ suggest_max_weight }}">
+
+                  </div>
+                </div>
+
+                <!-- Text input-->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="count">count</label>
+                  <div class="col-md-8">
+                  <input id="count" name="count" type="text" placeholder="" class="form-control input-md"
+                         value="{{ suggest_count }}">
+
+                  </div>
+                </div>
+
+                <!-- Button -->
+                <div class="form-group">
+                  <label class="col-md-2 control-label" for="submit">submit</label>
+                  <div class="col-md-8">
+                    <button id="submit" name="submit" class="btn btn-success">submit</button>
+                  </div>
+                </div>
+
+            </fieldset>
+        </form>
+    </div>
+    <div class="col-md-2"></div>
+    </div>
+
+
+
+</body>
+</html>
