@@ -34,7 +34,6 @@ def get_series(request, brand_id, series_id):
         try:
             series = Series.objects.get(pk=series_id, brand=brand_id)
             products = Product.objects.filter(brand=brand_id, series=series_id).order_by('size', 'count')
-            products = products.extra(select={'is_min': 'SELECT COUNT(*) FROM diapers_product'})
         except Series.DoesNotExist:
             raise Http404("Series does not exist")
     except Brand.DoesNotExist:
@@ -87,7 +86,8 @@ def manual_parse_result(request):
         series_id=request.POST['series'],
         type_id=request.POST['type'])
     new_product.save()
-
+    # TODO recheck types in parsed products
+    # TODO check if there are same products with different stocks from one seller
     product_preview = ProductPreview.objects.filter(pk=request.POST['chosen_product_id']).first()
     product_preview.status = "Done"
     product_preview.save()
@@ -97,7 +97,8 @@ def manual_parse_result(request):
 
     new_stock, created = Stock.objects.get_or_create(seller=product_preview.seller, product=new_product,
                                                      url=product_preview.url,
-                                                     defaults={'price_unit': -1, 'price_full': -1, 'in_stock': "Yes"})
+                                                     defaults={'price_unit': -1, 'price_full': -1, 'in_stock': True,
+                                                               'is_visible': True})
 
     new_stock.save()
     return HttpResponseRedirect(reverse('diapers:manual'))
@@ -146,11 +147,17 @@ def recreate(request):
     # Type recreate
     Type.set_default_data()
     # Series recreate
-    items_added = parser.parse_korablik()
-    items_added += parser.parse_deti()
-    items_added += parser.parse_detmir()
-    items_added += parser.parse_ozon()
+    items_added_korablik = parser.parse_korablik()
+    items_added_deti = parser.parse_deti()
+    items_added_detmir = parser.parse_detmir()
+    items_added_ozon = parser.parse_ozon()
 
     # TODO Check products, that already have parsed (compare urls, for example)
 
-    return render(request, 'diapers/parse/recreate.html', {'items_added': items_added})
+    return render(request, 'diapers/parse/recreate.html', {
+        'items_added_korablik': items_added_korablik,
+        'items_added_deti': items_added_deti,
+        'items_added_detmir': items_added_detmir,
+        'items_added_ozon': items_added_ozon,
+        'items_added': items_added_korablik + items_added_ozon + items_added_detmir + items_added_deti
+    })

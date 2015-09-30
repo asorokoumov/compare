@@ -59,6 +59,7 @@ def parse_prices():
     item_count = 0
     stock_objects = Stock.objects.all()
     for stock_object in stock_objects:
+        stock_object.is_visible = True
         product_url = stock_object.seller.url + stock_object.url
         if stock_object.seller.name == "Korablik":
             price_xpath = "//div[@class='goods-button-item_price']/span[@class='num']/text()"
@@ -66,20 +67,72 @@ def parse_prices():
         elif stock_object.seller.name == "Deti":
             price_xpath = "//p[@id='price']/b/text()"
 # TODO            price_before_discount_xpath = ""
-        page = requests.get(product_url)
-        tree = html.fromstring(page.text)
-        price = tree.xpath(price_xpath)
-        price = price[0].replace(" ", "")
-        stock_object.price_full = price
-        stock_object.price_unit = float(price) / stock_object.product.count
-        stock_object.save()
+        elif stock_object.seller.name == "Ozon":
+            price_xpath = "concat(//div[@class='bSale_BasePriceCover']/div/span[1]/text(),'.'," \
+                          "//div[@class='bSale_BasePriceCover']/div/span[2]/text())"
+        elif stock_object.seller.name == "Detmir":
+            price_xpath = "//div[@class='product_card__price']/div[@class='price']/text()"
+        try:
+            page = requests.get(product_url)
+            tree = html.fromstring(page.text)
+            if not is_available(tree=tree, stock_object=stock_object):
+                stock_object.is_visible = False
+                stock_object.save()
+            price = tree.xpath(price_xpath)
+            if stock_object.seller.name == "Ozon":
+                price = price.replace(u'\xa0', '').encode('utf-8')
+            else:
+                price = price[0].replace(" ", "")
+            try:
+                stock_object.price_full = float(price)
+                stock_object.price_unit = float(price) / stock_object.product.count
+                stock_object.save()
+            except ValueError:
+                stock_object.is_visible = False
+                stock_object.save()
+                # TODO Add logging
+        except (requests.exceptions.ReadTimeout, IndexError):
+            stock_object.is_visible = False
+            stock_object.save()
+            # TODO Add logging
         item_count += 1
 # TODO Price before discount
     return item_count
 
 
+def is_available(tree, stock_object):
+    if stock_object.seller.name == "Korablik":
+        availability_xpath = "//div[@class='shipping']"
+        if tree.xpath(availability_xpath):
+            return True
+        else:
+            return False
+    elif stock_object.seller.name == "Deti":
+        unavailability_xpath = "//div[@class='gallery_quantity have_not']"
+        if not tree.xpath(unavailability_xpath):
+            return True
+        else:
+            return False
+    elif stock_object.seller.name == "Ozon":
+        unavailability_xpath = "//div[@class='js_saleblock mSale_OutOfStock jsBigDetailSaleBlock']"
+        if not tree.xpath(unavailability_xpath):
+            return True
+        else:
+            return False
+    elif stock_object.seller.name == "Detmir":
+        unavailability_xpath = u'//div[contains(text(), "В интернет-магазине")]' \
+                               u'/div/div[@class="prod_presence_status no"]'
+        if not tree.xpath(unavailability_xpath):
+            return True
+        else:
+            return False
+
+
 def set_min_prices():
     serieses = Series.objects.all()
+    for stock in Stock.objects.all():
+        stock.price_unit_is_min = False
+        stock.save()
     for series in serieses:
         # TODO надо подумать, как переделать метод
         products_with_sizes = Product.objects.filter(series=series)
@@ -90,10 +143,10 @@ def set_min_prices():
             min_price = 1000000
             products = Product.objects.filter(series=series, size=size)
             for product in products:
-                stock_objects = Stock.objects.filter(product=product)
+                stock_objects = Stock.objects.filter(product=product, is_visible=True, in_stock=True)
                 for stock_object in stock_objects:
                     if min_price:
-                        if stock_object.price_unit < min_price:
+                        if stock_object.price_unit <= min_price:
                             min_price = stock_object.price_unit
                             min_price_stock_object = stock_object
             min_price_stock_object.price_unit_is_min = True
@@ -255,16 +308,17 @@ def parse_ozon():
         description = offer.xpath(description_xpath)
         item_type = offer.xpath(type_xpath)
         if item_type[0] in ["Многоразовый подгузник", "Подгузники", "Подгузники-трусики"]:
-            try:
-                ProductPreview(description=description[0], seller=seller, brand=Brand.objects.get(name=brand[0]),
-                           series=Series.objects.get(name="!Unknown_Unknown_brand_Series"), url=url,
-                           status="new").save()
-                items_added += 1
-            except (Brand.DoesNotExist, IndexError):
-                ProductPreview(description=description[0], seller=seller, brand=Brand.objects.get(name="Unknown_brand"),
-                           series=Series.objects.get(name="!Unknown_Unknown_brand_Series"), url=url,
-                           status="new").save()
-                items_added += 1
+            if not Stock.objects.filter(url=url):
+                try:
+                    ProductPreview(description=description[0], seller=seller, brand=Brand.objects.get(name=brand[0]),
+                                   series=Series.objects.get(name="!Unknown_Unknown_brand_Series"), url=url,
+                                   status="new").save()
+                    items_added += 1
+                except (Brand.DoesNotExist, IndexError):
+                    ProductPreview(description=description[0], seller=seller, brand=Brand.objects.get(name="Unknown_brand"),
+                                   series=Series.objects.get(name="!Unknown_Unknown_brand_Series"), url=url,
+                                   status="new").save()
+                    items_added += 1
     return items_added
 
 

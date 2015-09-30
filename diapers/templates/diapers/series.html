@@ -55,19 +55,20 @@
             </thead>
             {% for product in products %}
                 {% for stock in product.stock_set.all %}
-                    <tr {%if stock.price_unit_is_min %}
-                        class = "lowest"
-                        {% endif %} >
-                        <td><a href="{{ stock.seller.url }}{{ stock.url }}">{{ product.name }}</a></td>
-                        <td>{{ product.size }}</td>
-                        <td>{{ product.min_weight|floatformat }}</td>
-                        <td>{{ product.max_weight|floatformat }}</td>
-                        <td>{{ product.count }}</td>
-                        <td>{{ stock.price_full|floatformat }}</td>
-                        <td>{{ stock.price_unit|floatformat:-2 }}</td>
-                        <td>{{ stock.seller }}</td>
-                    </tr>
-
+                    {%if stock.is_visible %}
+                        <tr {%if stock.price_unit_is_min %}
+                            class = "lowest"
+                            {% endif %} >
+                            <td><a href="{{ stock.seller.url }}{{ stock.url }}">{{ product.name }}</a></td>
+                            <td>{{ product.size }}</td>
+                            <td>{{ product.min_weight|floatformat }}</td>
+                            <td>{{ product.max_weight|floatformat }}</td>
+                            <td>{{ product.count }}</td>
+                            <td>{{ stock.price_full|floatformat }}</td>
+                            <td>{{ stock.price_unit|floatformat:-2 }}</td>
+                            <td>{{ stock.seller }}</td>
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             {% endfor %}
         </table>
