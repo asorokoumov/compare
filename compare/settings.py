@@ -104,7 +104,7 @@ USE_TZ = True
 
 PROJECT_DIR = os.path.dirname(__file__)
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
-STATIC_URL = STATIC_ROOT
+STATIC_URL = '/static/'
 
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
