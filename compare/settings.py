@@ -102,9 +102,14 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/1.8/howto/static-files/
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-STATIC_ROOT = 'staticfiles'
+PROJECT_ROOT = os.path.abspath(os.path.dirname(__file__))
+PROJECT_DIR = os.path.join(PROJECT_ROOT, '../diapers')
+
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'staticfiles/')
 STATIC_URL = '/static/'
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_DIR, 'static/'),
+)
 
 # Parse database configuration from $DATABASE_URL
 import dj_database_url
