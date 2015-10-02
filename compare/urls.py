@@ -13,10 +13,18 @@ Including another URLconf
     1. Add an import:  from blog import urls as blog_urls
     2. Add a URL to urlpatterns:  url(r'^blog/', include(blog_urls))
 """
-from django.conf.urls import include, url
+from django.conf import settings
+from django.conf.urls import patterns, url, include
 from django.contrib import admin
 
+
+admin.autodiscover()
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
     url(r'^diapers/', include('diapers.urls', namespace="diapers")),
 ]
+
+if not settings.DEBUG:
+    urlpatterns += patterns('',
+        (r'^static/(?P<path>.*)$', 'django.views.static.serve', {'document_root': settings.STATIC_ROOT}),
+    )
