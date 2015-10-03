@@ -21,7 +21,7 @@ from django.contrib import admin
 admin.autodiscover()
 urlpatterns = [
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^diapers/', include('diapers.urls', namespace="diapers")),
+    url(r'^', include('diapers.urls', namespace="diapers")),
 ]
 
 urlpatterns += patterns('',
