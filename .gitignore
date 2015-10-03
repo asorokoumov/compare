@@ -42,3 +42,4 @@ Thumbs.db
 env/
 .idea/
 .pyc
+.local_settings.py
