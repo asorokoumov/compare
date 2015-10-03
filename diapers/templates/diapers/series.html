@@ -59,7 +59,7 @@
                         <tr {%if stock.price_unit_is_min %}
                             class = "lowest"
                             {% endif %} >
-                            <td><a href="{{ stock.seller.url }}{{ stock.url }}">{{ product.name }}</a></td>
+                            <td><a href="{{ stock.seller.url }}{{ stock.url }}">Ссылка</a></td>
                             <td>{{ product.size }}</td>
                             <td>{{ product.min_weight|floatformat }}</td>
                             <td>{{ product.max_weight|floatformat }}</td>
