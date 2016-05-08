@@ -131,33 +131,6 @@ def is_available(tree, stock_object):
         else:
             return False
 
-
-def set_min_prices():
-    serieses = Series.objects.all()
-    for stock in Stock.objects.all():
-        stock.price_unit_is_min = False
-        stock.save()
-    for series in serieses:
-        # TODO надо подумать, как переделать метод
-        products_with_sizes = Product.objects.filter(series=series)
-        sizes = []
-        for product in products_with_sizes:
-            sizes.append(product.size)
-        for size in sizes:
-            min_price = 1000000
-            products = Product.objects.filter(series=series, size=size)
-            for product in products:
-                stock_objects = Stock.objects.filter(product=product, is_visible=True, in_stock=True)
-                for stock_object in stock_objects:
-                    if min_price:
-                        if stock_object.price_unit <= min_price:
-                            min_price = stock_object.price_unit
-                            min_price_stock_object = stock_object
-            if 'min_price_stock_object' in locals():
-                min_price_stock_object.price_unit_is_min = True
-                min_price_stock_object.save()
-
-
 def parse_deti():
     # ## Deti
     # TODO move category urls to separate settings file

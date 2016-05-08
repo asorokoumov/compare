@@ -56,9 +56,7 @@
             {% for product in products %}
                 {% for stock in product.stock_set.all %}
                     {%if stock.is_visible %}
-                        <tr {%if stock.price_unit_is_min %}
-                            class = "lowest"
-                            {% endif %} >
+                        <tr>
                             <td><a href="{{ stock.seller.url }}{{ stock.url }}">Ссылка</a></td>
                             <td>{{ product.size }}</td>
                             <td>{{ product.min_weight|floatformat }}</td>

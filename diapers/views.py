@@ -128,10 +128,8 @@ def manual_parse(request):
 
 def parse_prices(request):
     # TODO BUG. Products disappear from the table on the web page
-
+    # TODO add availability checking
     prices_parsed = parser.update_prices()
-    # TODO parse availability
-    parser.set_min_prices()
     return render(request, 'diapers/parse/prices.html', {'prices_parsed': prices_parsed})
 
 
