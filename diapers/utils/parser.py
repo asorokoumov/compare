@@ -6,6 +6,11 @@ from diapers.models import Brand, ProductPreview, Series, Seller, Stock, Product
 from diapers.utils import common
 import logging
 
+import configparser
+
+shop_config = configparser.ConfigParser()
+shop_config.read('diapers/utils/shop_config.ini', encoding='utf-8')
+
 
 __author__ = 'anton.sorokoumov'
 
@@ -73,17 +78,8 @@ def update_prices():
         logger.debug('Set visibility to true')
 
         product_url = stock_object.seller.url + stock_object.url
-        if stock_object.seller.name == "Korablik":
-            price_xpath = "//div[@class='goods-button-item_price']/span[@class='num']/text()"
+        price_xpath = shop_config[stock_object.seller.name]['price_xpath']
         # TODO            price_before_discount_xpath = ""
-        elif stock_object.seller.name == "Deti":
-            price_xpath = "//p[@id='price']/b/text()"
-        # TODO            price_before_discount_xpath = ""
-        elif stock_object.seller.name == "Ozon":
-            price_xpath = "concat(//div[@class='bSale_BasePriceCover']/div/span[1]/text(),'.'," \
-                          "//div[@class='bSale_BasePriceCover']/div/span[2]/text())"
-        elif stock_object.seller.name == "Detmir":
-            price_xpath = "//div[@class='product_card__price']/div[@class='price']/text()"
         try:
             page = requests.get(product_url)
             tree = html.fromstring(page.text)
