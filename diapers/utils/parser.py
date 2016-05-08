@@ -64,6 +64,7 @@ def parse_catalog(seller, category_url, brand, series):
 
 def update_prices():
     # get prices from shops
+    # TODO move xpath to separate file
     item_count = 0
     logger.debug('Updating prices...')
     stock_objects = Stock.objects.all()
