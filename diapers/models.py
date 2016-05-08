@@ -220,7 +220,6 @@ class Stock (models.Model):
     price_full = models.FloatField()
     price_unit_before_discount = models.FloatField(default=-1)
     price_full_before_discount = models.FloatField(default=-1)
-    price_unit_is_min = models.BooleanField(default=False)
     in_stock = models.BooleanField(default=True)
     is_visible = models.BooleanField(default=True)
 
