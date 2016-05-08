@@ -4,8 +4,12 @@ import urllib2
 from lxml import html, etree
 from diapers.models import Brand, ProductPreview, Series, Seller, Stock, Product, Gender
 from diapers.utils import common
+import logging
+
 
 __author__ = 'anton.sorokoumov'
+
+logger = logging.getLogger('compare')
 
 
 def parse_catalog(seller, category_url, brand, series):
@@ -61,9 +65,12 @@ def parse_catalog(seller, category_url, brand, series):
 def update_prices():
     # get prices from shops
     item_count = 0
+    logger.debug('Updating prices...')
     stock_objects = Stock.objects.all()
     for stock_object in stock_objects:
         stock_object.is_visible = True
+        logger.debug('Set visibility to true')
+
         product_url = stock_object.seller.url + stock_object.url
         if stock_object.seller.name == "Korablik":
             price_xpath = "//div[@class='goods-button-item_price']/span[@class='num']/text()"
@@ -82,6 +89,7 @@ def update_prices():
             if not is_available(tree=tree, stock_object=stock_object):
                 stock_object.is_visible = False
                 stock_object.save()
+                logger.debug('Stock object not available ' + str(stock_object.id) + ' ' + str(stock_object.url))
             price = tree.xpath(price_xpath)
             if stock_object.seller.name == "Ozon":
                 price = price.replace(u'\xa0', '').encode('utf-8')
@@ -94,11 +102,11 @@ def update_prices():
             except ValueError:
                 stock_object.is_visible = False
                 stock_object.save()
-                # TODO Add logging
+                logger.debug('ValueError for stock_object ' + str(stock_object.id) + ' ' + str(stock_object.url))
         except (requests.exceptions.ReadTimeout, IndexError):
             stock_object.is_visible = False
             stock_object.save()
-            # TODO Add logging
+            logger.debug('ReadTimeout for stock_object ' + str(stock_object.id) + ' ' + str(stock_object.url))
         item_count += 1
     # TODO Price before discount
     return item_count
@@ -130,6 +138,7 @@ def is_available(tree, stock_object):
             return True
         else:
             return False
+
 
 def parse_deti():
     # ## Deti

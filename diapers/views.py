@@ -4,6 +4,7 @@ from django.shortcuts import render
 from lxml import html
 import requests
 import re
+import logging
 
 # Create your views here.
 from diapers.models import Brand, Series, Product, Stock, Seller, Gender, Type, ProductPreview, PreviewParseHistory
@@ -11,6 +12,9 @@ from django.db.models import Q
 from diapers.utils import parser
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+
+
+logger = logging.getLogger('compare')
 
 
 def index(request):
