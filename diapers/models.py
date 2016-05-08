@@ -43,81 +43,97 @@ class Series (models.Model):
         Series.objects.update_or_create(name="Active Baby", brand=Brand.objects.get(name="Pampers"),
                                                        defaults={'description': "Active Baby description"})
         #TODO move description to defaults
-        Series.objects.update_or_create(name="Active Boy", description="Active Boy description", brand=Brand.objects.get(name="Pampers"))
-        Series.objects.update_or_create(name="Active girl", description="Active girl description", brand=Brand.objects.get(name="Pampers"))
-        Series.objects.update_or_create(name="New Baby", description="New Baby description", brand=Brand.objects.get(name="Pampers"))
-        Series.objects.update_or_create(name="Pants", description="Pants description", brand=Brand.objects.get(name="Pampers"))
-        Series.objects.update_or_create(name="Premium Care", description="Premium Care description", brand=Brand.objects.get(name="Pampers"))
-        Series.objects.update_or_create(name="Sleep & Play", description="Sleep & Play description", brand=Brand.objects.get(name="Pampers"))
+        Series.objects.update_or_create(name="Active Boy", description="Active Boy description",
+                                        brand=Brand.objects.get(name="Pampers"))
+        Series.objects.update_or_create(name="Active girl", description="Active girl description",
+                                        brand=Brand.objects.get(name="Pampers"))
+        Series.objects.update_or_create(name="New Baby", description="New Baby description",
+                                        brand=Brand.objects.get(name="Pampers"))
+        Series.objects.update_or_create(name="Pants", description="Pants description",
+                                        brand=Brand.objects.get(name="Pampers"))
+        Series.objects.update_or_create(name="Premium Care", description="Premium Care description",
+                                        brand=Brand.objects.get(name="Pampers"))
+        Series.objects.update_or_create(name="Sleep & Play", description="Sleep & Play description",
+                                        brand=Brand.objects.get(name="Pampers"))
         # Huggies Series
-        Series.objects.update_or_create(name="Classic", description="Classic description", brand=Brand.objects.get(name="Huggies"))
-        Series.objects.update_or_create(name="Elite Soft", description="Elite Soft description", brand=Brand.objects.get(name="Huggies"))
+        Series.objects.update_or_create(name="Classic", description="Classic description",
+                                        brand=Brand.objects.get(name="Huggies"))
+        Series.objects.update_or_create(name="Elite Soft", description="Elite Soft description",
+                                        brand=Brand.objects.get(name="Huggies"))
         Series.objects.update_or_create(name="Little Walkers", description="Little Walkers description",
-               brand=Brand.objects.get(name="Huggies"))
-        Series.objects.update_or_create(name="New Born", description="New Born description", brand=Brand.objects.get(name="Huggies"))
+                                        brand=Brand.objects.get(name="Huggies"))
+        Series.objects.update_or_create(name="New Born", description="New Born description",
+                                        brand=Brand.objects.get(name="Huggies"))
         Series.objects.update_or_create(name="Ultra Comfort", description="Ultra Comfort description",
-               brand=Brand.objects.get(name="Huggies"))
+                                        brand=Brand.objects.get(name="Huggies"))
         # Libero Series
-        Series.objects.update_or_create(name="Comfort", description="Comfort description", brand=Brand.objects.get(name="Libero"))
-        Series.objects.update_or_create(name="Dry Pants", description="Dry Pants description", brand=Brand.objects.get(name="Libero"))
-        Series.objects.update_or_create(name="Every Day", description="Every Day description", brand=Brand.objects.get(name="Libero"))
-        Series.objects.update_or_create(name="Newborn", description="Newborn description", brand=Brand.objects.get(name="Libero"))
-        Series.objects.update_or_create(name="Up & Go", description="Up & Go description", brand=Brand.objects.get(name="Libero"))
-        Series.objects.update_or_create(name="Swimpants", description="Swimpants description", brand=Brand.objects.get(name="Libero"))
+        Series.objects.update_or_create(name="Comfort", description="Comfort description",
+                                        brand=Brand.objects.get(name="Libero"))
+        Series.objects.update_or_create(name="Dry Pants", description="Dry Pants description",
+                                        brand=Brand.objects.get(name="Libero"))
+        Series.objects.update_or_create(name="Every Day", description="Every Day description",
+                                        brand=Brand.objects.get(name="Libero"))
+        Series.objects.update_or_create(name="Newborn", description="Newborn description",
+                                        brand=Brand.objects.get(name="Libero"))
+        Series.objects.update_or_create(name="Up & Go", description="Up & Go description",
+                                        brand=Brand.objects.get(name="Libero"))
+        Series.objects.update_or_create(name="Swimpants", description="Swimpants description",
+                                        brand=Brand.objects.get(name="Libero"))
         # Maneki Series
         Series.objects.update_or_create(name="Maneki no series", description="Maneki no series description",
-               brand=Brand.objects.get(name="Maneki"))
+                                        brand=Brand.objects.get(name="Maneki"))
         # Milly Tilly Series
         Series.objects.update_or_create(name="Milly Tilly no series", description="Milly Tilly no series description",
-               brand=Brand.objects.get(name="Milly Tilly"))
+                                        brand=Brand.objects.get(name="Milly Tilly"))
         # Goon Series
-        Series.objects.update_or_create(name="Goon no series", description="Goon no series description", brand=Brand.objects.get(name="Goon"))
+        Series.objects.update_or_create(name="Goon no series", description="Goon no series description",
+                                        brand=Brand.objects.get(name="Goon"))
         # Merries Series
         Series.objects.update_or_create(name="Merries no series", description="Merries no series description",
-               brand=Brand.objects.get(name="Merries"))
+                                        brand=Brand.objects.get(name="Merries"))
         # Moony Series
         Series.objects.update_or_create(name="Moony no series", description="Moony no series description",
-               brand=Brand.objects.get(name="Moony"))
+                                        brand=Brand.objects.get(name="Moony"))
         # Helen Harper
         Series.objects.update_or_create(name="Helen Harper no series", description="Helen Harper no series description",
-               brand=Brand.objects.get(name="Helen Harper"))
+                                        brand=Brand.objects.get(name="Helen Harper"))
         # Baby care
         Series.objects.update_or_create(name="Baby care no series", description="Baby care no series description",
-               brand=Brand.objects.get(name="Baby care"))
+                                        brand=Brand.objects.get(name="Baby care"))
         # Mepsi
         Series.objects.update_or_create(name="Mepsi no series", description="Mepsi no series description",
-               brand=Brand.objects.get(name="Mepsi"))
+                                        brand=Brand.objects.get(name="Mepsi"))
         # Пелигрин
         Series.objects.update_or_create(name=u"Пелигрин no series", description=u"Пелигрин no series description",
-               brand=Brand.objects.get(name=u"Пелигрин"))
+                                        brand=Brand.objects.get(name=u"Пелигрин"))
 
         # Unknown
         Series.objects.update_or_create(name="!Unknown_Pampers_Series", description="Unknown_Pampers_Series",
-               brand=Brand.objects.get(name="Pampers"))
+                                        brand=Brand.objects.get(name="Pampers"))
         Series.objects.update_or_create(name="!Unknown_Huggies_Series", description="Unknown_Huggies_Series",
-               brand=Brand.objects.get(name="Huggies"))
+                                        brand=Brand.objects.get(name="Huggies"))
         Series.objects.update_or_create(name="!Unknown_Libero_Series", description="Unknown_Libero_Series",
-               brand=Brand.objects.get(name="Libero"))
+                                        brand=Brand.objects.get(name="Libero"))
         Series.objects.update_or_create(name="!Unknown_Maneki_Series", description="Unknown_Maneki_Series",
-               brand=Brand.objects.get(name="Maneki"))
+                                        brand=Brand.objects.get(name="Maneki"))
         Series.objects.update_or_create(name="!Unknown_Milly Tilly_Series", description="Unknown_Milly Tilly_Series",
-               brand=Brand.objects.get(name="Milly Tilly"))
+                                        brand=Brand.objects.get(name="Milly Tilly"))
         Series.objects.update_or_create(name="!Unknown_Goon_Series", description="Unknown_Goon_Series",
-               brand=Brand.objects.get(name="Goon"))
+                                        brand=Brand.objects.get(name="Goon"))
         Series.objects.update_or_create(name="!Unknown_Merries_Series", description="Unknown_Merries_Series",
-               brand=Brand.objects.get(name="Merries"))
+                                        brand=Brand.objects.get(name="Merries"))
         Series.objects.update_or_create(name="!Unknown_Moony_Series", description="Unknown_Moony_Series",
-               brand=Brand.objects.get(name="Moony"))
+                                        brand=Brand.objects.get(name="Moony"))
         Series.objects.update_or_create(name="!Unknown_Baby care_Series", description="Unknown_Baby care_Series",
-               brand=Brand.objects.get(name="Baby care"))
+                                        brand=Brand.objects.get(name="Baby care"))
         Series.objects.update_or_create(name="!Unknown_Helen Harper_Series", description="Unknown_Helen Harper_Series",
-               brand=Brand.objects.get(name="Helen Harper"))
+                                        brand=Brand.objects.get(name="Helen Harper"))
         Series.objects.update_or_create(name="!Unknown_Mepsi_Series", description="Unknown_Mepsi_Series",
-               brand=Brand.objects.get(name="Mepsi"))
+                                        brand=Brand.objects.get(name="Mepsi"))
         Series.objects.update_or_create(name=u"!Unknown_Пелигрин_Series", description=u"Unknown_Пелигрин_Series",
-               brand=Brand.objects.get(name=u"Пелигрин"))
+                                        brand=Brand.objects.get(name=u"Пелигрин"))
         Series.objects.update_or_create(name="!Unknown_Unknown_brand_Series", description="Unknown_Unknown_brand_Series",
-               brand=Brand.objects.get(name="Unknown_brand"))
+                                        brand=Brand.objects.get(name="Unknown_brand"))
 
 
 class Seller (models.Model):
