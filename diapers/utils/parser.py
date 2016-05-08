@@ -1,15 +1,16 @@
 # coding=utf-8
-__author__ = 'anton.sorokoumov'
-
-from lxml import html, etree
 import requests
+import urllib2
+from lxml import html, etree
 from diapers.models import Brand, ProductPreview, Series, Seller, Stock, Product, Gender
 from diapers.utils import common
-import urllib2
+
+__author__ = 'anton.sorokoumov'
 
 
 def parse_catalog(seller, category_url, brand, series):
-    #example_url = /catalog/pampers
+    # example_url = /catalog/pampers\
+    # TODO move xpath to separate settings file
     if seller.name == "Korablik":
         next_url_xpath = "//div[@class='paginator']/a[@class='next_page']/@data-noindex"
         item_xpath = "//div[contains(@class,'body__catalog_table')]/div[contains(@class,'body__catalog-item')]"
@@ -41,21 +42,24 @@ def parse_catalog(seller, category_url, brand, series):
                 if seller.name == "Deti":
                     try:
                         description = item_title[0].decode('utf-8').encode('latin1')
-                        ProductPreview(description=description, seller=seller, brand=brand, series=series, url=item_url[0],
-                               status="new").save()
+                        ProductPreview(description=description, seller=seller, brand=brand, series=series,
+                                       url=item_url[0],
+                                       status="new").save()
                     except UnicodeEncodeError:
                         description = item_title[0]
-                        ProductPreview(description=description, seller=seller, brand=brand, series=series, url=item_url[0],
-                               status="new").save()
+                        ProductPreview(description=description, seller=seller, brand=brand, series=series,
+                                       url=item_url[0],
+                                       status="new").save()
                 else:
                     description = u''.join(item_title)
                     ProductPreview(description=description, seller=seller, brand=brand, series=series, url=item_url[0],
-                               status="new").save()
+                                   status="new").save()
                 items_added += 1
     return items_added
 
 
-def parse_prices():
+def update_prices():
+    # get prices from shops
     item_count = 0
     stock_objects = Stock.objects.all()
     for stock_object in stock_objects:
@@ -63,10 +67,10 @@ def parse_prices():
         product_url = stock_object.seller.url + stock_object.url
         if stock_object.seller.name == "Korablik":
             price_xpath = "//div[@class='goods-button-item_price']/span[@class='num']/text()"
-# TODO            price_before_discount_xpath = ""
+        # TODO            price_before_discount_xpath = ""
         elif stock_object.seller.name == "Deti":
             price_xpath = "//p[@id='price']/b/text()"
-# TODO            price_before_discount_xpath = ""
+        # TODO            price_before_discount_xpath = ""
         elif stock_object.seller.name == "Ozon":
             price_xpath = "concat(//div[@class='bSale_BasePriceCover']/div/span[1]/text(),'.'," \
                           "//div[@class='bSale_BasePriceCover']/div/span[2]/text())"
@@ -96,7 +100,7 @@ def parse_prices():
             stock_object.save()
             # TODO Add logging
         item_count += 1
-# TODO Price before discount
+    # TODO Price before discount
     return item_count
 
 
@@ -149,12 +153,14 @@ def set_min_prices():
                         if stock_object.price_unit <= min_price:
                             min_price = stock_object.price_unit
                             min_price_stock_object = stock_object
-            min_price_stock_object.price_unit_is_min = True
-            min_price_stock_object.save()
+            if 'min_price_stock_object' in locals():
+                min_price_stock_object.price_unit_is_min = True
+                min_price_stock_object.save()
 
 
 def parse_deti():
     # ## Deti
+    # TODO move category urls to separate settings file
     # Pampers
     items_added = parse_catalog(seller=Seller.objects.get(name="Deti"),
                                 brand=Brand.objects.get(name="Pampers"),
@@ -190,6 +196,8 @@ def parse_deti():
 
 def parse_korablik():
     # ## Korablik
+    # TODO move category urls to separate settings file
+    # TODO (check) Don't parse "Новинки" block
     # Pampers
     items_added = parse_catalog(seller=Seller.objects.get(name="Korablik"),
                                 brand=Brand.objects.get(name="Pampers"),
@@ -245,6 +253,7 @@ def parse_korablik():
 
 def parse_detmir():
     # ## Detmir
+    # TODO move category urls to separate settings file
     # Pampers
     items_added = parse_catalog(seller=Seller.objects.get(name="Detmir"),
                                 brand=Brand.objects.get(name="Pampers"),
@@ -289,6 +298,8 @@ def parse_detmir():
 
 
 def parse_ozon():
+    # TODO move category urls to separate settings file
+
     catalog_url = "http://static.ozone.ru/multimedia/yml/facet/newborns_catalog/1175351.xml"
     item_xpath = "/yml_catalog/shop/offers/offer"
     url_xpath = "url/text()"
@@ -315,7 +326,8 @@ def parse_ozon():
                                    status="new").save()
                     items_added += 1
                 except (Brand.DoesNotExist, IndexError):
-                    ProductPreview(description=description[0], seller=seller, brand=Brand.objects.get(name="Unknown_brand"),
+                    ProductPreview(description=description[0], seller=seller,
+                                   brand=Brand.objects.get(name="Unknown_brand"),
                                    series=Series.objects.get(name="!Unknown_Unknown_brand_Series"), url=url,
                                    status="new").save()
                     items_added += 1

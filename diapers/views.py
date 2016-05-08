@@ -105,6 +105,7 @@ def manual_parse_result(request):
 
 
 def manual_parse(request):
+    # TODO make for all other brands
     chosen_product = ProductPreview.objects.filter(~Q(status='Done'), brand=Brand.objects.get(name="Pampers")) \
         .order_by('?').first()
 
@@ -126,8 +127,10 @@ def manual_parse(request):
 
 
 def parse_prices(request):
-    prices_parsed = parser.parse_prices()
-    #TODO parse availability
+    # TODO BUG. Products disappear from the table on the web page
+
+    prices_parsed = parser.update_prices()
+    # TODO parse availability
     parser.set_min_prices()
     return render(request, 'diapers/parse/prices.html', {'prices_parsed': prices_parsed})
 
@@ -147,11 +150,15 @@ def recreate(request):
     # Type recreate
     Type.set_default_data()
     # Series recreate
+    # TODO make separates buttons for each shop
     items_added_korablik = parser.parse_korablik()
-    items_added_deti = parser.parse_deti()
+    # TODO Deti BROKEN!
+    # items_added_deti = parser.parse_deti()
+    items_added_deti = 0
     items_added_detmir = parser.parse_detmir()
+    # TODO Ozon BROKEN!
     items_added_ozon = parser.parse_ozon()
-
+    # items_added_ozon = 0
     # TODO Check products, that already have parsed (compare urls, for example)
 
     return render(request, 'diapers/parse/recreate.html', {
