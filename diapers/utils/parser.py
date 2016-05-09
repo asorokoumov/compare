@@ -19,22 +19,11 @@ logger = logging.getLogger('compare')
 
 def parse_catalog(seller, category_url, brand, series):
     # example_url = /catalog/pampers\
-    # TODO move xpath to separate settings file
-    if seller.name == "Korablik":
-        next_url_xpath = "//div[@class='paginator']/a[@class='next_page']/@data-noindex"
-        item_xpath = "//div[contains(@class,'body__catalog_table')]/div[contains(@class,'body__catalog-item')]"
-        item_title_xpath = "a/div[@class='body__catalog-item_name']/text()"
-        item_url_xpath = "a[2]/@href"
-    elif seller.name == "Deti":
-        next_url_xpath = u"//div[@class='PageList']/a[contains(text(),'Вперед')]/@href"
-        item_xpath = "//ul[@class='Goods']/li"
-        item_title_xpath = "div[@class='top']/p/a/@title"
-        item_url_xpath = "div[@class='top']/p/a/@href"
-    elif seller.name == "Detmir":
-        next_url_xpath = "//div[@class='paginator']/a[@class='b']/@href"
-        item_xpath = "//div[@class='b-goods_card_list']/div[@class='b-goods_card_item']"
-        item_title_xpath = "div[@class='b-goods_card_item__caption']/a/text()"
-        item_url_xpath = "a/@href"
+
+    next_url_xpath = shop_config[seller.name]['next_url_xpath']
+    item_xpath = shop_config[seller.name]['item_xpath']
+    item_title_xpath = shop_config[seller.name]['item_title_xpath']
+    item_url_xpath = shop_config[seller.name]['item_url_xpath']
     next_url = [category_url]
     items_added = 0
     while next_url:
@@ -69,7 +58,6 @@ def parse_catalog(seller, category_url, brand, series):
 
 def update_prices():
     # get prices from shops
-    # TODO move xpath to separate file
     item_count = 0
     logger.debug('Updating prices...')
     stock_objects = Stock.objects.all()
