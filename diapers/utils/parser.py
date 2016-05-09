@@ -247,14 +247,12 @@ def parse_detmir():
 
 
 def parse_ozon():
-    # TODO move category urls to separate settings file
-
-    catalog_url = "http://static.ozone.ru/multimedia/yml/facet/newborns_catalog/1175351.xml"
-    item_xpath = "/yml_catalog/shop/offers/offer"
-    url_xpath = "url/text()"
-    brand_xpath = "vendor/text()"
-    description_xpath = "name/text()"
-    type_xpath = u"param[@name='Тип']/text()"
+    catalog_url = shop_config['Ozon']['catalog_url']
+    item_xpath = shop_config['Ozon']['item_xpath']
+    url_xpath = shop_config['Ozon']['url_xpath']
+    brand_xpath = shop_config['Ozon']['brand_xpath']
+    description_xpath = shop_config['Ozon']['description_xpath']
+    type_xpath = shop_config['Ozon']['type_xpath']
     items_added = 0
     seller = Seller.objects.get(name="Ozon")
 
