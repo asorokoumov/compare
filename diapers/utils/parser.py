@@ -110,31 +110,13 @@ def update_prices():
 
 
 def is_available(tree, stock_object):
-    if stock_object.seller.name == "Korablik":
-        availability_xpath = "//div[@class='shipping']"
-        if tree.xpath(availability_xpath):
-            return True
-        else:
-            return False
-    elif stock_object.seller.name == "Deti":
-        unavailability_xpath = "//div[@class='gallery_quantity have_not']"
-        if not tree.xpath(unavailability_xpath):
-            return True
-        else:
-            return False
-    elif stock_object.seller.name == "Ozon":
-        unavailability_xpath = "//div[@class='js_saleblock mSale_OutOfStock jsBigDetailSaleBlock']"
-        if not tree.xpath(unavailability_xpath):
-            return True
-        else:
-            return False
-    elif stock_object.seller.name == "Detmir":
-        unavailability_xpath = u'//div[contains(text(), "В интернет-магазине")]' \
-                               u'/div/div[@class="prod_presence_status no"]'
-        if not tree.xpath(unavailability_xpath):
-            return True
-        else:
-            return False
+    unavailability_xpath = shop_config[stock_object.seller.name]['unavailability_xpath']
+
+    if not tree.xpath(unavailability_xpath):
+        return True
+    else:
+        return False
+
 
 
 def parse_deti():
