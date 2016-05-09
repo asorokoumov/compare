@@ -8,8 +8,13 @@ import logging
 
 import configparser
 
-shop_config = configparser.ConfigParser()
-shop_config.read('diapers/utils/shop_config.ini', encoding='utf-8')
+shop_xpath = configparser.ConfigParser()
+shop_xpath.optionxform = str
+shop_xpath.read('diapers/utils/shop_xpath.ini', encoding='utf-8')
+
+shop_urls = configparser.ConfigParser()
+shop_urls.optionxform = str
+shop_urls.read('diapers/utils/shop_urls.ini', encoding='utf-8')
 
 
 __author__ = 'anton.sorokoumov'
@@ -17,13 +22,13 @@ __author__ = 'anton.sorokoumov'
 logger = logging.getLogger('compare')
 
 
-def parse_catalog(seller, category_url, brand, series):
+def parse_catalog(seller, category_url, brand):
     # example_url = /catalog/pampers\
 
-    next_url_xpath = shop_config[seller.name]['next_url_xpath']
-    item_xpath = shop_config[seller.name]['item_xpath']
-    item_title_xpath = shop_config[seller.name]['item_title_xpath']
-    item_url_xpath = shop_config[seller.name]['item_url_xpath']
+    next_url_xpath = shop_xpath[seller.name]['next_url_xpath']
+    item_xpath = shop_xpath[seller.name]['item_xpath']
+    item_title_xpath = shop_xpath[seller.name]['item_title_xpath']
+    item_url_xpath = shop_xpath[seller.name]['item_url_xpath']
     next_url = [category_url]
     items_added = 0
     while next_url:
@@ -40,17 +45,17 @@ def parse_catalog(seller, category_url, brand, series):
                 if seller.name == "Deti":
                     try:
                         description = item_title[0].decode('utf-8').encode('latin1')
-                        ProductPreview(description=description, seller=seller, brand=brand, series=series,
+                        ProductPreview(description=description, seller=seller, brand=brand,
                                        url=item_url[0],
                                        status="new").save()
                     except UnicodeEncodeError:
                         description = item_title[0]
-                        ProductPreview(description=description, seller=seller, brand=brand, series=series,
+                        ProductPreview(description=description, seller=seller, brand=brand,
                                        url=item_url[0],
                                        status="new").save()
                 else:
                     description = u''.join(item_title)
-                    ProductPreview(description=description, seller=seller, brand=brand, series=series, url=item_url[0],
+                    ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],
                                    status="new").save()
                 items_added += 1
     return items_added
@@ -66,7 +71,7 @@ def update_prices():
         logger.debug('Set visibility to true')
 
         product_url = stock_object.seller.url + stock_object.url
-        price_xpath = shop_config[stock_object.seller.name]['price_xpath']
+        price_xpath = shop_xpath[stock_object.seller.name]['price_xpath']
         # TODO            price_before_discount_xpath = ""
         try:
             page = requests.get(product_url)
@@ -98,161 +103,38 @@ def update_prices():
 
 
 def is_available(tree, stock_object):
-    unavailability_xpath = shop_config[stock_object.seller.name]['unavailability_xpath']
-
+    unavailability_xpath = shop_xpath[stock_object.seller.name]['unavailability_xpath']
     if not tree.xpath(unavailability_xpath):
         return True
     else:
         return False
 
 
-
-def parse_deti():
-    # ## Deti
-    # TODO move category urls to separate settings file
-    # Pampers
-    items_added = parse_catalog(seller=Seller.objects.get(name="Deti"),
-                                brand=Brand.objects.get(name="Pampers"),
-                                category_url="/catalog/gigiena/podguznikitrusiki/procter_end_gamble",
-                                series=Series.objects.get(name="!Unknown_Pampers_Series"))
-    # Huggies
-    items_added += parse_catalog(seller=Seller.objects.get(name="Deti"),
-                                 brand=Brand.objects.get(name="Huggies"),
-                                 category_url="/catalog/gigiena/podguznikitrusiki/huggies",
-                                 series=Series.objects.get(name="!Unknown_Huggies_Series"))
-    # Libero
-    items_added += parse_catalog(seller=Seller.objects.get(name="Deti"),
-                                 brand=Brand.objects.get(name="Libero"),
-                                 category_url="/catalog/gigiena/podguznikitrusiki/libero",
-                                 series=Series.objects.get(name="!Unknown_Libero_Series"))
-    # Goon
-    items_added += parse_catalog(seller=Seller.objects.get(name="Deti"),
-                                 brand=Brand.objects.get(name="Goon"),
-                                 category_url="/catalog/gigiena/podguznikitrusiki/goon",
-                                 series=Series.objects.get(name="!Unknown_Goon_Series"))
-    # Helen Harper
-    items_added += parse_catalog(seller=Seller.objects.get(name="Deti"),
-                                 brand=Brand.objects.get(name="Helen Harper"),
-                                 category_url="/catalog/gigiena/podguznikitrusiki/helen_harper",
-                                 series=Series.objects.get(name="!Unknown_Pampers_Series"))
-    # Baby care
-    items_added += parse_catalog(seller=Seller.objects.get(name="Deti"),
-                                 brand=Brand.objects.get(name="Baby care"),
-                                 category_url="/catalog/gigiena/podguznikitrusiki/baby_care",
-                                 series=Series.objects.get(name="!Unknown_Pampers_Series"))
+def parse_shop_catalog(seller_name):
+    items_added = 0
+    for brand in shop_urls[seller_name]:
+        category_urls = [e.strip() for e in shop_urls[seller_name][brand].split(',')]
+        for category_url in category_urls:
+            items_added += parse_catalog(seller=Seller.objects.get(name=seller_name),
+                                         brand=Brand.objects.get(name=brand),
+                                         category_url=category_url)
     return items_added
 
 
-def parse_korablik():
-    # ## Korablik
-    # TODO move category urls to separate settings file
-    # TODO (check) Don't parse "Новинки" block
-    # Pampers
-    items_added = parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                brand=Brand.objects.get(name="Pampers"),
-                                category_url="/catalog/pampers",
-                                series=Series.objects.get(name="!Unknown_Pampers_Series"))
-    # Huggies
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Huggies"),
-                                 category_url="/catalog/huggies",
-                                 series=Series.objects.get(name="!Unknown_Huggies_Series"))
-    # Libero
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Libero"),
-                                 category_url="/catalog/libero",
-                                 series=Series.objects.get(name="!Unknown_Libero_Series"))
-    # Maneki
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Huggies"),
-                                 category_url="/catalog/maneki_maneki",
-                                 series=Series.objects.get(name="!Unknown_Maneki_Series"))
-    # Milly Tilly
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Milly Tilly"),
-                                 category_url="/catalog/milly_tilly",
-                                 series=Series.objects.get(name="!Unknown_Milly Tilly_Series"))
-    # Goon
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Goon"),
-                                 category_url="/catalog/goon",
-                                 series=Series.objects.get(name="!Unknown_Goon_Series"))
-    # Merries
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Merries"),
-                                 category_url="/catalog/merries",
-                                 series=Series.objects.get(name="!Unknown_Merries_Series"))
-    # Moony
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Moony"),
-                                 category_url="/catalog/moony",
-                                 series=Series.objects.get(name="!Unknown_Moony_Series"))
-    # Unknown - for swim
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Unknown_brand"),
-                                 category_url="/catalog/podguzniki_dlya_plavaniya",
-                                 series=Series.objects.get(name="!Unknown_Unknown_brand_Series"))
-    # Unknown - gauze
-    items_added += parse_catalog(seller=Seller.objects.get(name="Korablik"),
-                                 brand=Brand.objects.get(name="Unknown_brand"),
-                                 category_url="/catalog/marlevye_podguzniki",
-                                 series=Series.objects.get(name="!Unknown_Unknown_brand_Series"))
-    return items_added
-
-
-def parse_detmir():
-    # ## Detmir
-    # TODO move category urls to separate settings file
-    # Pampers
-    items_added = parse_catalog(seller=Seller.objects.get(name="Detmir"),
-                                brand=Brand.objects.get(name="Pampers"),
-                                category_url="/catalog/index/name/podguzniki/brand/2911/",
-                                series=Series.objects.get(name="!Unknown_Pampers_Series"))
-    # Goon
-    items_added += parse_catalog(seller=Seller.objects.get(name="Detmir"),
-                                 brand=Brand.objects.get(name="Goon"),
-                                 category_url="/catalog/index/name/podguzniki/brand/221/",
-                                 series=Series.objects.get(name="!Unknown_Goon_Series"))
-    # Huggies
-    items_added += parse_catalog(seller=Seller.objects.get(name="Detmir"),
-                                 brand=Brand.objects.get(name="Huggies"),
-                                 category_url="/catalog/index/name/podguzniki/brand/2921/",
-                                 series=Series.objects.get(name="!Unknown_Huggies_Series"))
-    # Libero
-    items_added += parse_catalog(seller=Seller.objects.get(name="Detmir"),
-                                 brand=Brand.objects.get(name="Libero"),
-                                 category_url="/catalog/index/name/podguzniki/brand/261/",
-                                 series=Series.objects.get(name="!Unknown_Libero_Series"))
-    # Mepsi
-    items_added += parse_catalog(seller=Seller.objects.get(name="Detmir"),
-                                 brand=Brand.objects.get(name="Mepsi"),
-                                 category_url="/catalog/index/name/podguzniki/brand/8151/",
-                                 series=Series.objects.get(name="!Unknown_Mepsi_Series"))
-    # Merries
-    items_added += parse_catalog(seller=Seller.objects.get(name="Detmir"),
-                                 brand=Brand.objects.get(name="Merries"),
-                                 category_url="/catalog/index/name/podguzniki/brand/821/",
-                                 series=Series.objects.get(name="!Unknown_Merries_Series"))
-    # Milly Tilly
-    items_added += parse_catalog(seller=Seller.objects.get(name="Detmir"),
-                                 brand=Brand.objects.get(name="Milly Tilly"),
-                                 category_url="/catalog/index/name/podguzniki/brand/7281/",
-                                 series=Series.objects.get(name="!Unknown_Milly Tilly_Series"))
-    # Пелигрин
-    items_added += parse_catalog(seller=Seller.objects.get(name="Detmir"),
-                                 brand=Brand.objects.get(name=u"Пелигрин"),
-                                 category_url="/catalog/index/name/podguzniki/brand/4802/",
-                                 series=Series.objects.get(name=u"!Unknown_Пелигрин_Series"))
+def parse_shops_catalogs():
+    items_added = 0
+    for seller in shop_urls:
+        items_added += parse_shop_catalog(seller)
     return items_added
 
 
 def parse_ozon():
-    catalog_url = shop_config['Ozon']['catalog_url']
-    item_xpath = shop_config['Ozon']['item_xpath']
-    url_xpath = shop_config['Ozon']['url_xpath']
-    brand_xpath = shop_config['Ozon']['brand_xpath']
-    description_xpath = shop_config['Ozon']['description_xpath']
-    type_xpath = shop_config['Ozon']['type_xpath']
+    catalog_url = shop_xpath['Ozon']['catalog_url']
+    item_xpath = shop_xpath['Ozon']['item_xpath']
+    url_xpath = shop_xpath['Ozon']['url_xpath']
+    brand_xpath = shop_xpath['Ozon']['brand_xpath']
+    description_xpath = shop_xpath['Ozon']['description_xpath']
+    type_xpath = shop_xpath['Ozon']['type_xpath']
     items_added = 0
     seller = Seller.objects.get(name="Ozon")
 
@@ -281,6 +163,7 @@ def parse_ozon():
     return items_added
 
 
+# TODO move all suggestions to the separate file
 def suggest_brand(product):
     brand = product.brand.id
     return brand

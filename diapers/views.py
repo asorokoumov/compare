@@ -12,9 +12,18 @@ from django.db.models import Q
 from diapers.utils import parser
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
+import configparser
 
 
 logger = logging.getLogger('compare')
+
+shop_xpath = configparser.ConfigParser()
+shop_xpath.optionxform = str
+shop_xpath.read('diapers/utils/shop_xpath.ini', encoding='utf-8')
+
+shop_urls = configparser.ConfigParser()
+shop_urls.optionxform = str
+shop_urls.read('diapers/utils/shop_urls.ini', encoding='utf-8')
 
 
 def index(request):
@@ -47,24 +56,24 @@ def get_series(request, brand_id, series_id):
                                                    'products': products})
 
 
-def parse_korablik(request):
-    seller_id = 4
-    parse(seller_id)
-    prices = Stock.objects.filter(seller=seller_id)
-
+# TODO get rid of it
+def parse_korablik_items(request):
+    seller = Seller.objects.get(name="Korablik")
+    parse_items(seller)
+    prices = Stock.objects.filter(seller=seller.id)
     return render(request, 'diapers/parse/korablik.html', {'price_after_discount': prices})
 
 
-def parse(seller_id):
-    seller_url = Seller.objects.get(pk=seller_id).url
-    stock_items = Stock.objects.filter(seller=seller_id)
+def parse_items(seller):
+    seller_url = seller.url
+    stock_items = Stock.objects.filter(seller=seller)
 
     for stock_item in stock_items:
         product_url = stock_item.url
         page = requests.get(seller_url + product_url)
         tree = html.fromstring(page.text)
-
-        price_after_discount = tree.xpath('//div[@class="goods-button-item_price"]/span[@class="num"]/text()')
+        price_after_discount_xpath = shop_xpath[seller.name]['price_after_discount']
+        price_after_discount = tree.xpath(price_after_discount_xpath)
         # TODO add price_before_discount
         # price_before_discount = tree.xpath('//span[@class="item-price"]/text()')
         try:
@@ -131,7 +140,6 @@ def manual_parse(request):
 
 
 def parse_prices(request):
-    # TODO BUG. Products disappear from the table on the web page
     # TODO add availability checking
     prices_parsed = parser.update_prices()
     return render(request, 'diapers/parse/prices.html', {'prices_parsed': prices_parsed})
@@ -153,11 +161,11 @@ def recreate(request):
     Type.set_default_data()
     # Series recreate
     # TODO make separates buttons for each shop
-    items_added_korablik = parser.parse_korablik()
+    items_added_korablik = parser.parse_shop_catalog('Korablik')
     # TODO Deti BROKEN!
     # items_added_deti = parser.parse_deti()
     items_added_deti = 0
-    items_added_detmir = parser.parse_detmir()
+    items_added_detmir = parser.parse_shop_catalog('Detmir')
     # TODO Ozon BROKEN!
     items_added_ozon = parser.parse_ozon()
     # items_added_ozon = 0
