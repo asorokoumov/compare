@@ -56,14 +56,6 @@ def get_series(request, brand_id, series_id):
                                                    'products': products})
 
 
-# TODO get rid of it
-def parse_korablik_items(request):
-    seller = Seller.objects.get(name="Korablik")
-    parse_items(seller)
-    prices = Stock.objects.filter(seller=seller.id)
-    return render(request, 'diapers/parse/korablik.html', {'price_after_discount': prices})
-
-
 def parse_items(seller):
     seller_url = seller.url
     stock_items = Stock.objects.filter(seller=seller)
