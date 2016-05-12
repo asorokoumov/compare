@@ -149,7 +149,6 @@ class Seller (models.Model):
         #TODO move description and url to defaults
         Seller.objects.update_or_create(name="Korablik", description="Korablik description", url="http://korablik.ru")
         Seller.objects.update_or_create(name="Ozon", description="Ozon description", url="http://www.ozon.ru")
-        Seller.objects.update_or_create(name="Deti", description="Deti description", url="http://online.detishop.ru")
         Seller.objects.update_or_create(name="Detmir", description="Detmir description", url="http://www.detmir.ru")
 
 

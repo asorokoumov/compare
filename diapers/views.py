@@ -154,9 +154,6 @@ def recreate(request):
     # Series recreate
     # TODO make separates buttons for each shop
     items_added_korablik = parser.parse_shop_catalog('Korablik')
-    # TODO Deti BROKEN!
-    # items_added_deti = parser.parse_deti()
-    items_added_deti = 0
     items_added_detmir = parser.parse_shop_catalog('Detmir')
     # TODO Ozon BROKEN!
     items_added_ozon = parser.parse_ozon_catalog()
@@ -165,8 +162,7 @@ def recreate(request):
 
     return render(request, 'diapers/parse/recreate.html', {
         'items_added_korablik': items_added_korablik,
-        'items_added_deti': items_added_deti,
         'items_added_detmir': items_added_detmir,
         'items_added_ozon': items_added_ozon,
-        'items_added': items_added_korablik + items_added_ozon + items_added_detmir + items_added_deti
+        'items_added': items_added_korablik + items_added_ozon + items_added_detmir
     })
