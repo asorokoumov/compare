@@ -39,6 +39,7 @@ Thumbs.db
 
 # Other #
 ####################
+.env/
 env/
 .idea/
 *.pyc
