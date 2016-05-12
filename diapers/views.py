@@ -159,7 +159,7 @@ def recreate(request):
     items_added_deti = 0
     items_added_detmir = parser.parse_shop_catalog('Detmir')
     # TODO Ozon BROKEN!
-    items_added_ozon = parser.parse_ozon()
+    items_added_ozon = parser.parse_ozon_catalog()
     # items_added_ozon = 0
     # TODO Check products, that already have parsed (compare urls, for example)
 

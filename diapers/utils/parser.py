@@ -128,7 +128,7 @@ def parse_shops_catalogs():
     return items_added
 
 
-def parse_ozon():
+def parse_ozon_catalog():
     catalog_url = shop_xpath['Ozon']['catalog_url']
     item_xpath = shop_xpath['Ozon']['item_xpath']
     url_xpath = shop_xpath['Ozon']['url_xpath']
