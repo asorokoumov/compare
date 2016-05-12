@@ -156,13 +156,13 @@ def recreate(request):
     items_added_korablik = parser.parse_shop_catalog('Korablik')
     items_added_detmir = parser.parse_shop_catalog('Detmir')
     # TODO Ozon BROKEN!
-    items_added_ozon = parser.parse_ozon_catalog()
+#    items_added_ozon = parser.parse_ozon_catalog()
     # items_added_ozon = 0
     # TODO Check products, that already have parsed (compare urls, for example)
 
     return render(request, 'diapers/parse/recreate.html', {
         'items_added_korablik': items_added_korablik,
         'items_added_detmir': items_added_detmir,
-        'items_added_ozon': items_added_ozon,
-        'items_added': items_added_korablik + items_added_ozon + items_added_detmir
+ #      'items_added_ozon': items_added_ozon,
+        'items_added': items_added_korablik  + items_added_detmir #+ items_added_ozon
     })
