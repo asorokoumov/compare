@@ -42,21 +42,9 @@ def parse_catalog(seller, category_url, brand):
             item_title = item.xpath(item_title_xpath)
             item_url = item.xpath(item_url_xpath)
             if not Stock.objects.filter(url=item_url[0]):
-                if seller.name == "Deti":
-                    try:
-                        description = item_title[0].decode('utf-8').encode('latin1')
-                        ProductPreview(description=description, seller=seller, brand=brand,
-                                       url=item_url[0],
-                                       status="new").save()
-                    except UnicodeEncodeError:
-                        description = item_title[0]
-                        ProductPreview(description=description, seller=seller, brand=brand,
-                                       url=item_url[0],
-                                       status="new").save()
-                else:
-                    description = u''.join(item_title)
-                    ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],
-                                   status="new").save()
+                description = u''.join(item_title)
+                ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],
+                               status="new").save()
                 items_added += 1
     return items_added
 
@@ -185,20 +173,6 @@ def suggest_series(product):
         description = product.description.split(" (")
         description = description[0].split(product.brand.name + " ")
         description = description[1].replace("Baby-Dry", "Baby")
-        description = description.replace("Sleep&Play", "Sleep & Play")
-        series = description.rsplit(' ', 1)[0]
-        series = Series.objects.filter(name=series).first()
-        try:
-            return series.id
-        except AttributeError:
-            return "-1"
-    elif product.seller == Seller.objects.get(name="Deti"):
-        description = product.description.split(" кг")
-        description = description[0].split(product.brand.name + " ")
-        try:
-            description = description[1].replace("Baby-Dry", "Baby")
-        except IndexError:
-            return "-1"
         description = description.replace("Sleep&Play", "Sleep & Play")
         series = description.rsplit(' ', 1)[0]
         series = Series.objects.filter(name=series).first()
