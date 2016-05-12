@@ -9,7 +9,7 @@ import logging
 # Create your views here.
 from diapers.models import Brand, Series, Product, Stock, Seller, Gender, Type, ProductPreview, PreviewParseHistory
 from django.db.models import Q
-from diapers.utils import parser
+from diapers.utils import parser, suggester
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import configparser
@@ -119,13 +119,13 @@ def manual_parse(request):
                    'all_series': Series.objects.all(),
                    'all_types': Type.objects.all(),
                    'all_genders': Gender.objects.all(),
-                   'suggest_brand': parser.suggest_brand(chosen_product),
-                   'suggest_series': parser.suggest_series(chosen_product),
-                   'suggest_size': parser.suggest_size(chosen_product),
-                   'suggest_gender': parser.suggest_gender(chosen_product),
-                   'suggest_min_weight': parser.suggest_min_weight(chosen_product),
-                   'suggest_max_weight': parser.suggest_max_weight(chosen_product),
-                   'suggest_count': parser.suggest_count(chosen_product),
+                   'suggest_brand': suggester.suggest_brand(chosen_product),
+                   'suggest_series': suggester.suggest_series(chosen_product),
+                   'suggest_size': suggester.suggest_size(chosen_product),
+                   'suggest_gender': suggester.suggest_gender(chosen_product),
+                   'suggest_min_weight': suggester.suggest_min_weight(chosen_product),
+                   'suggest_max_weight': suggester.suggest_max_weight(chosen_product),
+                   'suggest_count': suggester.suggest_count(chosen_product),
                    'chosen_product': chosen_product,
                    'progress_counter': ProductPreview.objects.filter(~Q(status='Done'),
                                                                      brand=Brand.objects.get(name="Pampers")).count()})
