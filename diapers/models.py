@@ -14,6 +14,7 @@ class Brand (models.Model):
 
     @staticmethod
     def set_default_data():
+        # TODO move it to cycle
         Brand.objects.update_or_create(name="Pampers", defaults={'description': "Pampers description"})
         Brand.objects.update_or_create(name="Huggies", defaults={'description': "Huggies description"})
         Brand.objects.update_or_create(name="Libero", defaults={'description': "Libero description"})

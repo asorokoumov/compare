@@ -5,24 +5,18 @@ from lxml import html
 import requests
 import re
 import logging
-
-# Create your views here.
 from diapers.models import Brand, Series, Product, Stock, Seller, Gender, Type, ProductPreview, PreviewParseHistory
 from django.db.models import Q
 from diapers.utils import parser, suggester
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
-import configparser
+from configobj import ConfigObj
+
 
 logger = logging.getLogger('compare')
 
-shop_xpath = configparser.ConfigParser()
-shop_xpath.optionxform = str
-shop_xpath.read('diapers/utils/shop_xpath.ini', encoding='utf-8')
-
-shop_urls = configparser.ConfigParser()
-shop_urls.optionxform = str
-shop_urls.read('diapers/utils/shop_urls.ini', encoding='utf-8')
+shop_xpath = ConfigObj('diapers/utils/shop_xpath.ini')
+shop_urls = ConfigObj('diapers/utils/shop_urls.ini')
 
 
 def index(request):

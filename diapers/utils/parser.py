@@ -5,16 +5,10 @@ from lxml import html, etree
 from diapers.models import Brand, ProductPreview, Series, Seller, Stock
 import logging
 
-# TODO move to ConfigObj
-import configparser
+from configobj import ConfigObj
 
-shop_xpath = configparser.ConfigParser()
-shop_xpath.optionxform = str
-shop_xpath.read('diapers/utils/shop_xpath.ini', encoding='utf-8')
-
-shop_urls = configparser.ConfigParser()
-shop_urls.optionxform = str
-shop_urls.read('diapers/utils/shop_urls.ini', encoding='utf-8')
+shop_xpath = ConfigObj('diapers/utils/shop_xpath.ini')
+shop_urls = ConfigObj('diapers/utils/shop_urls.ini')
 
 
 __author__ = 'anton.sorokoumov'
@@ -94,7 +88,9 @@ def is_available(tree, stock_object):
 def parse_shop_catalog(seller_name, check_stock=True):
     items_added = 0
     for brand in shop_urls[seller_name]:
-        category_urls = [e.strip() for e in shop_urls[seller_name][brand].split(',')]
+        category_urls = shop_urls[seller_name][brand]
+        if type(category_urls) is str:
+            category_urls = set([category_urls])
         for category_url in category_urls:
             items_added += parse_catalog(seller=Seller.objects.get(name=seller_name),
                                          brand=Brand.objects.get(name=brand),
