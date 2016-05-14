@@ -146,13 +146,8 @@ def recreate(request):
     # Type recreate
     Type.set_default_data()
     # Series recreate
-    # TODO make separates buttons for each shop
     items_added_korablik = parser.parse_shop_catalog('Korablik', False)
     items_added_detmir = parser.parse_shop_catalog('Detmir', False)
-    # TODO Ozon BROKEN!
-    #    items_added_ozon = parser.parse_ozon_catalog()
-    # items_added_ozon = 0
-    # TODO Check products, that already have parsed (compare urls, for example)
 
     return render(request, 'diapers/parse/recreate.html', {
         'items_added_korablik': items_added_korablik,
