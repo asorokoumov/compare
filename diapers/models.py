@@ -28,7 +28,7 @@ class Brand (models.Model):
         Brand.objects.update_or_create(name="Mepsi", defaults={'description': "Mepsi description"})
         Brand.objects.update_or_create(name="Molfix", defaults={'description': "Molfix description"})
         Brand.objects.update_or_create(name="Angelcare", defaults={'description': "Angelcare description"})
-        Brand.objects.update_or_create(name="Korablik", defaults={'description': "Korablik description"})
+        Brand.objects.update_or_create(name=u"Кораблик", defaults={'description': u"Кораблик description"})
         Brand.objects.update_or_create(name=u"Пелигрин", defaults={'description': u"Пелигрин description"})
         Brand.objects.update_or_create(name="Unknown_brand", defaults={'description': "Unknown_brand description"})
 
