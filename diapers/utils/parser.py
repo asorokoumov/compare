@@ -5,6 +5,7 @@ from lxml import html, etree
 from diapers.models import Brand, ProductPreview, Series, Seller, Stock
 import logging
 
+# TODO move to ConfigObj
 import configparser
 
 shop_xpath = configparser.ConfigParser()
@@ -21,9 +22,9 @@ __author__ = 'anton.sorokoumov'
 logger = logging.getLogger('compare')
 
 
-def parse_catalog(seller, category_url, brand):
+def parse_catalog(seller, category_url, brand, check_stock=True):
     # example_url = /catalog/pampers\
-
+    logger.debug('Parcing ' + seller.name + '. Category: ' + category_url + '. Brand: ' + brand.name)
     next_url = [category_url]
     items_added = 0
     while next_url:
@@ -36,11 +37,12 @@ def parse_catalog(seller, category_url, brand):
         for item in items:
             item_title = item.xpath(shop_xpath[seller.name]['item_title_xpath'])
             item_url = item.xpath(shop_xpath[seller.name]['item_url_xpath'])
-            if not Stock.objects.filter(url=item_url[0]):
+            if not (any(Stock.objects.filter(url=item_url[0])) & check_stock):
                 description = u''.join(item_title)
                 ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],
                                status="new").save()
                 items_added += 1
+    logger.debug('Parced: ' + str(items_added))
     return items_added
 
 
@@ -89,21 +91,21 @@ def is_available(tree, stock_object):
         return False
 
 
-def parse_shop_catalog(seller_name):
+def parse_shop_catalog(seller_name, check_stock=True):
     items_added = 0
     for brand in shop_urls[seller_name]:
         category_urls = [e.strip() for e in shop_urls[seller_name][brand].split(',')]
         for category_url in category_urls:
             items_added += parse_catalog(seller=Seller.objects.get(name=seller_name),
                                          brand=Brand.objects.get(name=brand),
-                                         category_url=category_url)
+                                         category_url=category_url, check_stock=check_stock)
     return items_added
 
 
-def parse_shops_catalogs():
+def parse_shops_catalogs(check_stock=True):
     items_added = 0
     for seller in shop_urls:
-        items_added += parse_shop_catalog(seller)
+        items_added += parse_shop_catalog(seller, check_stock=check_stock)
     return items_added
 
 

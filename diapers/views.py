@@ -138,6 +138,7 @@ def recreate(request):
     # Delete products, previews and history from everywhere
     PreviewParseHistory.objects.all().delete()
     ProductPreview.objects.all().delete()
+    Product.objects.all().delete()
     # Seller recreate
     Seller.set_default_data()
     # Gender recreate
@@ -150,8 +151,8 @@ def recreate(request):
     Type.set_default_data()
     # Series recreate
     # TODO make separates buttons for each shop
-    items_added_korablik = parser.parse_shop_catalog('Korablik')
-    items_added_detmir = parser.parse_shop_catalog('Detmir')
+    items_added_korablik = parser.parse_shop_catalog('Korablik', False)
+    items_added_detmir = parser.parse_shop_catalog('Detmir', False)
     # TODO Ozon BROKEN!
     #    items_added_ozon = parser.parse_ozon_catalog()
     # items_added_ozon = 0
