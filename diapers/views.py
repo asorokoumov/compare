@@ -14,7 +14,6 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 import configparser
 
-
 logger = logging.getLogger('compare')
 
 shop_xpath = configparser.ConfigParser()
@@ -41,7 +40,6 @@ def get_brand(request, brand_id):
 
 
 def get_series(request, brand_id, series_id):
-
     try:
         brand = Brand.objects.get(pk=brand_id)
         try:
@@ -67,7 +65,6 @@ def parse_items(seller):
         price_after_discount_xpath = shop_xpath[seller.name]['price_after_discount']
         price_after_discount = tree.xpath(price_after_discount_xpath)
         # TODO add price_before_discount
-        # price_before_discount = tree.xpath('//span[@class="item-price"]/text()')
         try:
             price_after_discount = re.sub('\s+', '', price_after_discount[0])
             stock_item.price_full = price_after_discount
@@ -156,13 +153,13 @@ def recreate(request):
     items_added_korablik = parser.parse_shop_catalog('Korablik')
     items_added_detmir = parser.parse_shop_catalog('Detmir')
     # TODO Ozon BROKEN!
-#    items_added_ozon = parser.parse_ozon_catalog()
+    #    items_added_ozon = parser.parse_ozon_catalog()
     # items_added_ozon = 0
     # TODO Check products, that already have parsed (compare urls, for example)
 
     return render(request, 'diapers/parse/recreate.html', {
         'items_added_korablik': items_added_korablik,
         'items_added_detmir': items_added_detmir,
- #      'items_added_ozon': items_added_ozon,
-        'items_added': items_added_korablik  + items_added_detmir #+ items_added_ozon
+        #      'items_added_ozon': items_added_ozon,
+        'items_added': items_added_korablik + items_added_detmir  # + items_added_ozon
     })
