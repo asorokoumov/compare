@@ -24,10 +24,6 @@ logger = logging.getLogger('compare')
 def parse_catalog(seller, category_url, brand):
     # example_url = /catalog/pampers\
 
-    next_url_xpath = shop_xpath[seller.name]['next_url_xpath']
-    item_xpath = shop_xpath[seller.name]['item_xpath']
-    item_title_xpath = shop_xpath[seller.name]['item_title_xpath']
-    item_url_xpath = shop_xpath[seller.name]['item_url_xpath']
     next_url = [category_url]
     items_added = 0
     while next_url:
@@ -35,11 +31,11 @@ def parse_catalog(seller, category_url, brand):
         next_url = seller.url + next_url
         page = requests.get(next_url)
         tree = html.fromstring(page.text)
-        next_url = tree.xpath(next_url_xpath)
-        items = tree.xpath(item_xpath)
+        next_url = tree.xpath(shop_xpath[seller.name]['next_url_xpath'])
+        items = tree.xpath(shop_xpath[seller.name]['item_xpath'])
         for item in items:
-            item_title = item.xpath(item_title_xpath)
-            item_url = item.xpath(item_url_xpath)
+            item_title = item.xpath(shop_xpath[seller.name]['item_title_xpath'])
+            item_url = item.xpath(shop_xpath[seller.name]['item_url_xpath'])
             if not Stock.objects.filter(url=item_url[0]):
                 description = u''.join(item_title)
                 ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],
@@ -56,18 +52,14 @@ def update_prices():
     for stock_object in stock_objects:
         stock_object.is_visible = True
         logger.debug('Set visibility to true')
-
-        product_url = stock_object.seller.url + stock_object.url
-        price_xpath = shop_xpath[stock_object.seller.name]['price_xpath']
-        # TODO            price_before_discount_xpath = ""
         try:
-            page = requests.get(product_url)
+            page = requests.get(stock_object.seller.url + stock_object.url)
             tree = html.fromstring(page.text)
             if not is_available(tree=tree, stock_object=stock_object):
                 stock_object.is_visible = False
                 stock_object.save()
                 logger.debug('Stock object not available ' + str(stock_object.id) + ' ' + str(stock_object.url))
-            price = tree.xpath(price_xpath)
+            price = tree.xpath(shop_xpath[stock_object.seller.name]['price_xpath'])
             if stock_object.seller.name == "Ozon":
                 price = price.replace(u'\xa0', '').encode('utf-8')
             else:

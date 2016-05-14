@@ -3,7 +3,6 @@ from diapers.utils import common
 from diapers.models import Series, Seller, Gender
 
 
-# TODO move all suggestions to the separate file
 def suggest_brand(product):
     brand = product.brand.id
     return brand
