@@ -21,8 +21,11 @@ shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
 
 def index(request):
     brands = Brand.objects.filter()
-
     return render(request, 'diapers/index.html', {'brands': brands})
+
+
+def status(request):
+    return render(request, 'diapers/status.html')
 
 
 def get_brand(request, brand_id):
@@ -83,7 +86,6 @@ def manual_parse_result(request):
         type_id=request.POST['type'])
     new_product.save()
     # TODO recheck types in parsed products
-    # TODO check if there are same products with different stocks from one seller
     product_preview = ProductPreview.objects.filter(pk=request.POST['chosen_product_id']).first()
     product_preview.status = "Done"
     product_preview.save()
