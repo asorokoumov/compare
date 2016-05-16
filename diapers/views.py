@@ -104,12 +104,11 @@ def manual_parse_result(request):
 
 def manual_parse(request):
     # TODO make for all other brands
-    chosen_product = ProductPreview.objects.filter(~Q(status='Done'), brand=Brand.objects.get(name="Pampers")) \
-        .order_by('?').first()
+    chosen_product = ProductPreview.objects.filter(~Q(status='Done')).order_by('?').first()
 
     return render(request, 'diapers/parse/manual_parse.html',
                   {'all_brands': Brand.objects.all(),
-                   'all_series': Series.objects.all(),
+                   'all_series': Series.objects.filter(brand=chosen_product.brand),
                    'all_types': Type.objects.all(),
                    'all_genders': Gender.objects.all(),
                    'suggest_brand': suggester.suggest_brand(chosen_product),
@@ -120,8 +119,7 @@ def manual_parse(request):
                    'suggest_max_weight': suggester.suggest_max_weight(chosen_product),
                    'suggest_count': suggester.suggest_count(chosen_product),
                    'chosen_product': chosen_product,
-                   'progress_counter': ProductPreview.objects.filter(~Q(status='Done'),
-                                                                     brand=Brand.objects.get(name="Pampers")).count()})
+                   'progress_counter': ProductPreview.objects.filter(~Q(status='Done')).count()})
 
 
 def parse_prices(request):
@@ -136,14 +134,19 @@ def recreate(request):
     ProductPreview.objects.all().delete()
     Product.objects.all().delete()
     # Seller recreate
+    Seller.objects.all().delete()
     Seller.set_default_data()
     # Gender recreate
+    Gender.objects.all().delete()
     Gender.set_default_data()
     # Brand recreate
+    Brand.objects.all().delete()
     Brand.set_default_data()
     # Series recreate
+    Series.objects.all().delete()
     Series.set_default_data()
     # Type recreate
+    Type.objects.all().delete()
     Type.set_default_data()
     # Series recreate
     items_added_korablik = parser.parse_shop_catalog('Korablik', False)
