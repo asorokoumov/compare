@@ -74,8 +74,6 @@ def parse_items(seller):
 
 def manual_parse_result(request):
     new_product, created = Product.objects.get_or_create(
-        name="New product",
-        description="New product description",
         size=request.POST['size'],
         min_weight=request.POST['min_weight'],
         max_weight=request.POST['max_weight'],

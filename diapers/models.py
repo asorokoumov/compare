@@ -74,8 +74,6 @@ class Gender (models.Model):
 
 
 class Product (models.Model):
-    name = models.CharField(max_length=200)
-    description = models.TextField()
     brand = models.ForeignKey(Brand)
     series = models.ForeignKey(Series)
     type = models.ForeignKey(Type)
