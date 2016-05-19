@@ -75,7 +75,7 @@ class Gender (models.Model):
 
 class Product (models.Model):
     brand = models.ForeignKey(Brand)
-    series = models.ForeignKey(Series)
+    series = models.ForeignKey(Series, default=None, blank=True, null=True)
     type = models.ForeignKey(Type)
     gender = models.ForeignKey(Gender)
     size = models.CharField(max_length=200)
@@ -110,5 +110,5 @@ class Stock (models.Model):
     price_unit_before_discount = models.FloatField(default=-1)
     price_full_before_discount = models.FloatField(default=-1)
     in_stock = models.BooleanField(default=True)
-    is_visible = models.BooleanField(default=True)
+    is_visible = models.BooleanField(default=True)  # = False if we have any errors during price parcing
 
