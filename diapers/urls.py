@@ -7,8 +7,11 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^status/$', views.status, name='status'),
 
-    url(r'^(?P<brand_id>[0-9]+)/$', views.get_brand, name='brand'),
-    url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/$', views.get_series, name='series'),
+    # TODO create human understanding urls
+    url(r'^brands/$', views.show_brands, name='brands'),
+    url(r'^(?P<brand_id>[0-9]+)/$', views.show_series, name='series'),
+    url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/$', views.show_sizes, name='sizes'),
+    url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/(?P<size>.+)/$', views.show_products, name='products'),
 
     url(r'^parse/recreate/$', views.recreate, name='recreate'),
     url(r'^parse/prices/$', views.get_prices_and_availability, name='parse_prices'),

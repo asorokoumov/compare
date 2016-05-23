@@ -20,35 +20,69 @@ shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
 
 
 def index(request):
-    brands = Brand.objects.filter()
-    return render(request, 'diapers/index.html', {'brands': brands})
+    return render(request, 'diapers/index.html')
 
 
 def status(request):
     return render(request, 'diapers/status.html')
 
 
-def get_brand(request, brand_id):
+def show_brands(request):
+    brands = Brand.objects.filter()
+    return render(request, 'diapers/brands.html', {'brands': brands})
+
+# TODO show brands with no series
+
+
+def show_series(request, brand_id):
     try:
         brand = Brand.objects.get(pk=brand_id)
     except Brand.DoesNotExist:
         raise Http404("Brand does not exist")
-    return render(request, 'diapers/brand.html', {'brand': brand})
+    return render(request, 'diapers/series.html', {'brand': brand})
 
 
-def get_series(request, brand_id, series_id):
+def show_sizes(request, brand_id, series_id):
     try:
         brand = Brand.objects.get(pk=brand_id)
         try:
             series = Series.objects.get(pk=series_id, brand=brand_id)
-            products = Product.objects.filter(brand=brand_id, series=series_id).order_by('size', 'count')
+            products = Product.objects.filter(brand=brand_id, series=series_id)
+            sizes_objects = products.values('size').distinct()
+            sizes = []
+            for size_object in sizes_objects:
+                sizes.append(size_object['size'])
+            sizes.sort()
         except Series.DoesNotExist:
             raise Http404("Series does not exist")
     except Brand.DoesNotExist:
         raise Http404("Brand does not exist")
-    return render(request, 'diapers/series.html', {'brand': brand,
-                                                   'series': series,
-                                                   'products': products})
+    return render(request, 'diapers/sizes.html', {'brand': brand,
+                                                  'series': series,
+                                                  'sizes': sizes})
+
+
+def show_products(request, brand_id, series_id, size):
+    try:
+        brand = Brand.objects.get(pk=brand_id)
+        try:
+            series = Series.objects.get(pk=series_id, brand=brand_id)
+            products = Product.objects.filter(brand=brand_id, series=series_id, size=size)
+            stock_list = []
+            for product in products:
+                stock_objects = Stock.objects.filter(product=product)
+                for stock_object in stock_objects:
+                    if stock_object.is_visible:
+                        stock_list.append(stock_object)
+            stock_list.sort(key=lambda x: x.price_unit)
+        except Series.DoesNotExist:
+            raise Http404("Series does not exist")
+    except Brand.DoesNotExist:
+        raise Http404("Brand does not exist")
+    return render(request, 'diapers/products.html', {'brand': brand,
+                                                     'series': series,
+                                                     'stock_list': stock_list,
+                                                     'current_size': size})
 
 
 def parse_items(seller):

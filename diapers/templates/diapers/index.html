@@ -1,14 +1,11 @@
 <!DOCTYPE html>
-<br lang="en">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title></title>
+    <title>Index page</title>
 </head>
-<a href="{% url 'diapers:index' %}">index</a></br>
-</br>
-{% for brand in brands %}
-    <a href="{% url 'diapers:brand' brand.id %}">{{ brand.name }}</a></br>
-{% endfor %}
+<body>
+<a href="{% url 'diapers:brands' %}">Brand list</a></br>
 
 </body>
 </html>

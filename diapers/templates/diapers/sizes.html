@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<br lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<a href="{% url 'diapers:brands' %}">Brand list</a></br></br>
+
+<a href="{% url 'diapers:series' brand.id %}">{{ brand.name }}</a>
+<h4>{{ series.name }}</h4>
+
+
+{% for size in sizes %}
+    <a href="{% url 'diapers:products' brand.id series.id size %}">{{ size }}</a> &nbsp;
+{% endfor %}
+
+</body>
+</html>

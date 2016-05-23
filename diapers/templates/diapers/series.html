@@ -1,82 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<br lang="en">
 <head>
     <meta charset="UTF-8">
     <title></title>
-    {% load staticfiles %}
-    <link rel="stylesheet" type="text/css" href="{% static 'diapers/css/bootstrap.min.css' %}" />
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
 </head>
-<body>
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="{% static 'diapers/js/bootstrap.min.js' %}"></script>
-    <!-- Suggest stuff -->
-    <style>
-        tr.lowest {background-color:lightgreen;}
-    </style>
-    <script>
-        $(document).ready(function () {
-            $('select[name=series]').val({{ suggest_series }});
-            $('select[name=series]').change();
-
-            $('select[name=brand]').val({{ suggest_brand }});
-            $('select[name=brand]').change();
-
-    })
-
-    </script>
-    <div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
-        <a href="{% url 'diapers:index' %}">В начало</a>
-        <h3><a href="{% url 'diapers:brand' brand.id %}">{{ brand.name }}</a></h3>
-        <h4>{{ series.name }}</h4>
-
-        <table class="table table-hover">
-            <thead>
-                <tr>
-                    <th>Продукт</th>
-                    <th>Размер</th>
-                    <th>Вес от</th>
-                    <th>Вес до</th>
-                    <th>Количество</th>
-                    <th>Цена</th>
-                    <th>Цена за шт</th>
-                    <th>Продавец</th>
-                </tr>
-            </thead>
-            {% for product in products %}
-                {% for stock in product.stock_set.all %}
-                    {%if stock.is_visible %}
-                        <tr>
-                            <td><a href="{{ stock.seller.url }}{{ stock.url }}">Ссылка</a></td>
-                            <td>{{ product.size }}</td>
-                            <td>{{ product.min_weight|floatformat }}</td>
-                            <td>{{ product.max_weight|floatformat }}</td>
-                            <td>{{ product.count }}</td>
-                            <td>{{ stock.price_full|floatformat }}</td>
-                            <td>{{ stock.price_unit|floatformat:-2 }}</td>
-                            <td>{{ stock.seller }}</td>
-                        </tr>
-                    {% endif %}
-                {% endfor %}
-            {% endfor %}
-        </table>
+<a href="{% url 'diapers:brands' %}">Brand list</a>
+<h4>{{ brand.name }}</h4>
 
 
-    </div>
-    <div class="col-md-3"></div>
-    </div>
-
-
+{% for series in brand.series_set.all %}
+    <a href="{% url 'diapers:sizes' brand.id series.id %}">{{ series.name }}</a> </br>
+{% endfor %}
 
 </body>
 </html>
