@@ -80,7 +80,7 @@ def manual_parse_result(request):
         count=request.POST['count'],
         gender_id=request.POST['gender'],
         brand_id=request.POST['brand'],
-        series_id=request.POST['series'],
+        series_id=request.POST.get('series', None),
         type_id=request.POST['type'])
     new_product.save()
     # TODO recheck types in parsed products
@@ -120,39 +120,39 @@ def manual_parse(request):
                    'progress_counter': ProductPreview.objects.filter(~Q(status='Done')).count()})
 
 
-def parse_prices(request):
+def get_prices_and_availability(request):
     # TODO add availability checking
-    prices_parsed = parser.update_prices()
+    prices_parsed = parser.get_prices_and_availability()
     return render(request, 'diapers/parse/prices.html', {'prices_parsed': prices_parsed})
 
 
 def recreate(request):
     # Delete products, previews and history from everywhere
-    PreviewParseHistory.objects.all().delete()
-    ProductPreview.objects.all().delete()
-    Product.objects.all().delete()
+    #  PreviewParseHistory.objects.all().delete()
+    #  ProductPreview.objects.all().delete()
+    #  Product.objects.all().delete()
     # Seller recreate
-    Seller.objects.all().delete()
-    Seller.set_default_data()
+    #  Seller.objects.all().delete()
+    #  Seller.set_default_data()
     # Gender recreate
-    Gender.objects.all().delete()
-    Gender.set_default_data()
+    #  Gender.objects.all().delete()
+    #  Gender.set_default_data()
     # Brand recreate
-    Brand.objects.all().delete()
-    Brand.set_default_data()
+    #  Brand.objects.all().delete()
+    #  Brand.set_default_data()
     # Series recreate
-    Series.objects.all().delete()
-    Series.set_default_data()
+    #  Series.objects.all().delete()
+    #  Series.set_default_data()
     # Type recreate
-    Type.objects.all().delete()
-    Type.set_default_data()
+    #  Type.objects.all().delete()
+    #  Type.set_default_data()
     # Series recreate
-    items_added_korablik = parser.parse_shop_catalog('Korablik', False)
-    items_added_detmir = parser.parse_shop_catalog('Detmir', False)
+    #  items_added_korablik = parser.parse_shop_catalog('Korablik', False)
+    #  items_added_detmir = parser.parse_shop_catalog('Detmir', False)
 
     return render(request, 'diapers/parse/recreate.html', {
-        'items_added_korablik': items_added_korablik,
-        'items_added_detmir': items_added_detmir,
+        #      'items_added_korablik': items_added_korablik,
+        #       'items_added_detmir': items_added_detmir,
         #      'items_added_ozon': items_added_ozon,
-        'items_added': items_added_korablik + items_added_detmir  # + items_added_ozon
+        #       'items_added': items_added_korablik + items_added_detmir  # + items_added_ozon
     })

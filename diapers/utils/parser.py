@@ -42,48 +42,48 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
     return items_added
 
 
-def update_prices():
-    # get prices from shops
+def get_prices_and_availability():
+    # get prices from shops for stock
     item_count = 0
     logger.debug('Updating prices...')
     stock_objects = Stock.objects.all()
     for stock_object in stock_objects:
-        stock_object.is_visible = True
-        logger.debug('Set visibility to true')
         try:
             page = requests.get(stock_object.seller.url + stock_object.url)
             tree = html.fromstring(page.text)
-            if not is_available(tree=tree, stock_object=stock_object):
-                stock_object.is_visible = False
-                stock_object.save()
-                logger.debug('Stock object not available ' + str(stock_object.id) + ' ' + str(stock_object.url))
-            price = tree.xpath(shop_xpath[stock_object.seller.name]['price_xpath'])
-            if stock_object.seller.name == "Ozon":
-                price = price.replace(u'\xa0', '').encode('utf-8')
-            else:
-                price = price[0].replace(" ", "")
-            try:
-                stock_object.price_full = float(price)
-                stock_object.price_unit = float(price) / stock_object.product.count
-                stock_object.save()
-            except ValueError:
-                stock_object.is_visible = False
-                stock_object.save()
-                logger.debug('ValueError for stock_object ' + str(stock_object.id) + ' ' + str(stock_object.url))
+            # TODO add checking availability
+#            stock_object.in_stock = is_in_stock(tree=tree, stock_object=stock_object)
+            get_item_prices(tree=tree, stock_object=stock_object)
         except (requests.exceptions.ReadTimeout, IndexError):
-            stock_object.is_visible = False
-            stock_object.save()
-            logger.debug('ReadTimeout for stock_object ' + str(stock_object.id) + ' ' + str(stock_object.url))
+            logger.debug('ReadTimeout during prices update for stock_object ' + str(stock_object.id) + ' '
+                         + str(stock_object.url))
+        stock_object.save()
         item_count += 1
     # TODO Price before discount
     return item_count
 
 
-def is_available(tree, stock_object):
+def get_item_prices(tree, stock_object):
+    price = tree.xpath(shop_xpath[stock_object.seller.name]['price_xpath'])
+    price = price[0].replace(" ", "")
+    try:
+        # TODO add checking price before discount
+        stock_object.price_full = float(price)
+        stock_object.price_unit = float(price) / stock_object.product.count
+        stock_object.is_visible = True
+    except ValueError:
+        stock_object.is_visible = False
+        logger.debug('ValueError during prices update for stock_object ' + str(stock_object.id) + ' '
+                     + str(stock_object.url))
+
+
+def is_in_stock(tree, stock_object):
+    # TODO check it.
     unavailability_xpath = shop_xpath[stock_object.seller.name]['unavailability_xpath']
     if not tree.xpath(unavailability_xpath):
         return True
     else:
+        logger.debug('Object is not in seller\'s stock ' + str(stock_object.id) + ' ' + str(stock_object.url))
         return False
 
 
@@ -92,7 +92,7 @@ def parse_shop_catalog(seller_name, check_stock=True):
     for brand in shop_urls[seller_name]:
         category_urls = shop_urls[seller_name][brand]
         if type(category_urls) is str:
-            category_urls = set([category_urls])
+            category_urls = {category_urls}
         for category_url in category_urls:
             items_added += parse_catalog(seller=Seller.objects.get(name=seller_name),
                                          brand=Brand.objects.get(name=brand),
