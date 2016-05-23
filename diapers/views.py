@@ -83,7 +83,6 @@ def manual_parse_result(request):
         series_id=request.POST.get('series', None),
         type_id=request.POST['type'])
     new_product.save()
-    # TODO recheck types in parsed products
     product_preview = ProductPreview.objects.filter(pk=request.POST['chosen_product_id']).first()
     product_preview.status = "Done"
     product_preview.save()
@@ -101,7 +100,6 @@ def manual_parse_result(request):
 
 
 def manual_parse(request):
-    # TODO make for all other brands
     chosen_product = ProductPreview.objects.filter(~Q(status='Done')).order_by('?').first()
 
     return render(request, 'diapers/parse/manual_parse.html',
