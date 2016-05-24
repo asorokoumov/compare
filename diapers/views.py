@@ -118,7 +118,7 @@ def manual_parse_result(request):
         type_id=request.POST['type'])
     new_product.save()
     product_preview = ProductPreview.objects.filter(pk=request.POST['chosen_product_id']).first()
-    product_preview.status = "Done"
+    product_preview.status = "done"
     product_preview.save()
 
     preview_parse_history = PreviewParseHistory(product=new_product, preview=product_preview)
@@ -134,7 +134,9 @@ def manual_parse_result(request):
 
 
 def manual_parse(request):
-    chosen_product = ProductPreview.objects.filter(~Q(status='Done')).order_by('?').first()
+    chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip'),
+                                                    brand=Brand.objects.get(name='Pampers')).order_by('?')
+    chosen_product = chosen_products.first()
 
     return render(request, 'diapers/parse/manual_parse.html',
                   {'all_brands': Brand.objects.all(),
@@ -149,7 +151,7 @@ def manual_parse(request):
                    'suggest_max_weight': suggester.suggest_max_weight(chosen_product),
                    'suggest_count': suggester.suggest_count(chosen_product),
                    'chosen_product': chosen_product,
-                   'progress_counter': ProductPreview.objects.filter(~Q(status='Done')).count()})
+                   'progress_counter': chosen_products.count()})
 
 
 def get_prices_and_availability(request):
