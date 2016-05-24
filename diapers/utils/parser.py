@@ -48,6 +48,7 @@ def get_prices_and_availability():
     logger.debug('Updating prices...')
     stock_objects = Stock.objects.all()
     for stock_object in stock_objects:
+        logger.debug('Getting prices for ' + str(stock_object.id) + ' ' + str(stock_object.url))
         try:
             page = requests.get(stock_object.seller.url + stock_object.url)
             tree = html.fromstring(page.text)
@@ -57,6 +58,8 @@ def get_prices_and_availability():
         except (requests.exceptions.ReadTimeout, IndexError):
             logger.debug('ReadTimeout during prices update for stock_object ' + str(stock_object.id) + ' '
                          + str(stock_object.url))
+            stock_object.is_visible = False
+
         stock_object.save()
         item_count += 1
     # TODO Price before discount
