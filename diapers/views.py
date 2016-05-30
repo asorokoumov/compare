@@ -37,6 +37,8 @@ def show_brands(request):
 def show_series(request, brand_id):
     try:
         brand = Brand.objects.get(pk=brand_id)
+        series = Series.objects.filter(brand=brand_id)
+        
     except Brand.DoesNotExist:
         raise Http404("Brand does not exist")
     return render(request, 'diapers/series.html', {'brand': brand})

@@ -75,7 +75,7 @@ class Gender (models.Model):
 
 class Product (models.Model):
     brand = models.ForeignKey(Brand)
-    series = models.ForeignKey(Series, default=None, blank=True, null=True)
+    series = models.ForeignKey(Series, default=None)
     type = models.ForeignKey(Type)
     gender = models.ForeignKey(Gender)
     size = models.CharField(max_length=200)
