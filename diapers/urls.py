@@ -14,7 +14,7 @@ urlpatterns = [
     url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/(?P<size>.+)/$', views.show_products, name='products'),
 
     url(r'^parse/recreate/$', views.recreate, name='recreate'),
-    url(r'^parse/prices/$', views.get_prices_and_availability, name='parse_prices'),
+    url(r'^parse/prices/$', views.update_prices_and_availability, name='update_prices_and_availability'),
     url(r'^parse/manual/$', views.manual_parse, name='manual'),
     url(r'^parse/manual_parse_result/$', views.manual_parse_result, name='manual_parse_result'),
 ]

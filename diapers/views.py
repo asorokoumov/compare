@@ -134,8 +134,7 @@ def manual_parse_result(request):
 
 
 def manual_parse(request):
-    chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip'),
-                                                    brand=Brand.objects.get(name='Pampers')).order_by('?')
+    chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
     chosen_product = chosen_products.first()
 
     return render(request, 'diapers/parse/manual_parse.html',
@@ -154,7 +153,7 @@ def manual_parse(request):
                    'progress_counter': chosen_products.count()})
 
 
-def get_prices_and_availability(request):
+def update_prices_and_availability(request):
     # TODO add availability checking
     prices_parsed = parser.get_prices_and_availability()
     return render(request, 'diapers/parse/prices.html', {'prices_parsed': prices_parsed})
