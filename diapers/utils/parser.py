@@ -32,9 +32,9 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
         for item in items:
             item_title = item.xpath(shop_xpath[seller.name]['item_title_xpath'])
             item_url = item.xpath(shop_xpath[seller.name]['item_url_xpath'])
-            if not (any(Stock.objects.filter(url=item_url[0])) & check_stock):
+            item_url[0] = crutch.item_url(item_url[0], seller)
+            if not (any(ProductPreview.objects.filter(url=item_url[0])) & check_stock):
                 description = u''.join(item_title)
-                item_url[0] = crutch.item_url(item_url[0], seller)
                 ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],
                                status="new").save()
                 items_added += 1

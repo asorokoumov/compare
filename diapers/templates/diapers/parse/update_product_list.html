@@ -1,0 +1,14 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update product list</title>
+</head>
+<body>
+<ul>
+{% for shop, items in items_added.items %}
+    <li>{{ shop }} : {{ items }}</li>
+{% endfor %}
+</ul>
+</body>
+</html>
