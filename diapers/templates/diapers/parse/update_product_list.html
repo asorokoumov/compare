@@ -5,6 +5,9 @@
     <title>Update product list</title>
 </head>
 <body>
+<a href="{% url 'diapers:index' %}">index</a>
+<br>
+<br>
 <ul>
 {% for shop, items in items_added.items %}
     <li>{{ shop }} : {{ items }}</li>
