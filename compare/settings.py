@@ -126,13 +126,13 @@ LOGGING = {
         'application': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/application.log',
+            'filename': 'compare/logs/application.log',
             'formatter': 'verbose'
         },
         'compare': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/compare.log',
+            'filename': 'compare/logs/compare.log',
             'formatter': 'verbose'
         },
     },
