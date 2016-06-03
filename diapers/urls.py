@@ -6,6 +6,7 @@ from . import views
 urlpatterns = [
     url(r'^$', views.index, name='index'),
     url(r'^status/$', views.status, name='status'),
+    url(r'^todo/$', views.todo, name='todo'),
 
     # TODO create human understanding urls
     url(r'^brands/$', views.show_brands, name='brands'),

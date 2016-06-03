@@ -28,6 +28,10 @@ def status(request):
     return render(request, 'diapers/status.html')
 
 
+def todo(request):
+    return render(request, 'diapers/todo.html')
+
+
 def show_brands(request):
     brands = Brand.objects.filter()
     return render(request, 'diapers/brands.html', {'brands': brands})
