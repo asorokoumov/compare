@@ -15,9 +15,9 @@ from configobj import ConfigObj
 
 logger = logging.getLogger('compare')
 
-shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
-shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
-shop_main = ConfigObj('compare/diapers/utils/data_config/shop_main.ini')
+shop_xpath = ConfigObj('diapers/utils/data_config/shop_xpath.ini')
+shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
+shop_main = ConfigObj('diapers/utils/data_config/shop_main.ini')
 
 
 def index(request):
