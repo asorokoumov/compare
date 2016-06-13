@@ -15,9 +15,9 @@ from configobj import ConfigObj
 
 logger = logging.getLogger('compare')
 
-shop_xpath = ConfigObj('diapers/utils/data_config/shop_xpath.ini')
-shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
-shop_main = ConfigObj('diapers/utils/data_config/shop_main.ini')
+shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
+shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
+shop_main = ConfigObj('compare/diapers/utils/data_config/shop_main.ini')
 
 
 def index(request):
@@ -32,9 +32,26 @@ def todo(request):
     return render(request, 'diapers/todo.html')
 
 
+def admin(request):
+    return render(request, 'diapers/admin.html')
+
+
 def show_brands(request):
-    brands = Brand.objects.filter()
-    return render(request, 'diapers/brands.html', {'brands': brands})
+    brands = Brand.objects.filter(~Q(name='Unknown_brand'))
+    brand_output = []
+    for brand in brands:
+        if brand.name != 'Unknown_brand':
+            if len(Stock.objects.filter(product=Product.objects.filter(brand=brand))) > 0:
+                brand_output_item = {'series_count': len(Series.objects.filter(brand=brand)),
+                                     'stock_count': len(Stock.objects.filter(product=Product.objects.filter(brand=brand))),
+                                     'brand_id': brand.id,
+                                     'brand_name': brand.name,
+                                     'brand_image': brand.image}
+                brand_output.append(brand_output_item)
+                # TODO add brand.image
+    brand_output.sort(key=lambda x: x['stock_count'], reverse=True)
+
+    return render(request, 'diapers/brands.html', {'brand_output': brand_output})
 
 # TODO show brands with no series
 
@@ -42,29 +59,53 @@ def show_brands(request):
 def show_series(request, brand_id):
     try:
         brand = Brand.objects.get(pk=brand_id)
+        series_all = Series.objects.filter(brand=brand)
+        series_output = []
+        for series in series_all:
+            if len(Stock.objects.filter(product=Product.objects.filter(series=series))) > 0:
+                products = Product.objects.filter(brand=brand, series=series)
+                sizes = products.values('size').distinct().count
+                series_output_item = {'sizes_count': sizes,
+                                      'stock_count': len(Stock.objects.filter(
+                                          product=Product.objects.filter(series=series, brand=brand))),
+                                      'series_name': series.name,
+                                      'series_id': series.id}
+                series_output.append(series_output_item)
+        series_output.sort(key=lambda x: x['stock_count'], reverse=True)
     except Brand.DoesNotExist:
         raise Http404("Brand does not exist")
-    return render(request, 'diapers/series.html', {'brand': brand})
+    return render(request, 'diapers/series.html', {'brand': brand, 'series_output': series_output})
 
 
 def show_sizes(request, brand_id, series_id):
     try:
         brand = Brand.objects.get(pk=brand_id)
+        series = Series.objects.get(pk=series_id, brand=brand)
         try:
-            series = Series.objects.get(pk=series_id, brand=brand_id)
-            products = Product.objects.filter(brand=brand_id, series=series_id)
+            products = Product.objects.filter(series=series, brand=brand)
             sizes_objects = products.values('size').distinct()
             sizes = []
             for size_object in sizes_objects:
                 sizes.append(size_object['size'])
             sizes.sort()
+            sizes_output = []
+            for size in sizes:
+                products = Product.objects.filter(brand=brand, series=series, size=size)
+                product_min_weight = min(products, key=lambda x: x.min_weight)
+                product_max_weight = min(products, key=lambda x: x.min_weight)
+                sizes_output_item = {'size_number': size,
+                                     'stock_count': len(Stock.objects.filter(product=products)),
+                                     'min_weight': product_min_weight.min_weight,
+                                     'max_weight': product_max_weight.max_weight}
+                sizes_output.append(sizes_output_item)
+
         except Series.DoesNotExist:
             raise Http404("Series does not exist")
     except Brand.DoesNotExist:
         raise Http404("Brand does not exist")
     return render(request, 'diapers/sizes.html', {'brand': brand,
                                                   'series': series,
-                                                  'sizes': sizes})
+                                                  'sizes_output': sizes_output})
 
 
 def show_products(request, brand_id, series_id, size):

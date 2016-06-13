@@ -10,6 +10,7 @@ shops = ConfigObj('diapers/utils/data_config/shop_main.ini')
 class Brand (models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(default=None, blank=True, null=True)
+    image = models.TextField(max_length=200)
 
     def __str__(self):
         return self.name
@@ -82,9 +83,6 @@ class Product (models.Model):
     min_weight = models.FloatField()
     max_weight = models.FloatField()
     count = models.IntegerField()
-
-    def __str__(self):
-        return self.name
 
 
 class ProductPreview (models.Model):
