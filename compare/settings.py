@@ -80,7 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': 'compare/config/default.conf',
+            'read_default_file': 'config/default.conf',
         },
     }
 }
@@ -126,13 +126,13 @@ LOGGING = {
         'application': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'compare/logs/application.log',
+            'filename': 'logs/application.log',
             'formatter': 'verbose'
         },
         'compare': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'compare/logs/compare.log',
+            'filename': 'logs/compare.log',
             'formatter': 'verbose'
         },
     },

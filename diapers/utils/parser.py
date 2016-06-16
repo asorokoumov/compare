@@ -8,8 +8,8 @@ import crutch
 
 from configobj import ConfigObj
 
-shop_xpath = ConfigObj('diapers/utils/data_config/shop_xpath.ini')
-shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
+shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
+shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
 
 
 __author__ = 'anton.sorokoumov'
