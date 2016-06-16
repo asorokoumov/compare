@@ -105,6 +105,7 @@ USE_TZ = True
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 STATIC_ROOT = os.path.join(PROJECT_DIR, 'static')
+LOGGING_ROOT = PROJECT_DIR
 
 STATIC_URL = '/static/'
 
@@ -126,13 +127,13 @@ LOGGING = {
         'application': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/application.log',
+            'filename': os.path.join(LOGGING_ROOT, 'application.log'),
             'formatter': 'verbose'
         },
         'compare': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': 'logs/compare.log',
+            'filename': os.path.join(LOGGING_ROOT, 'compare.log'),
             'formatter': 'verbose'
         },
     },
