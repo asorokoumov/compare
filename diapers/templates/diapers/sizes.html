@@ -63,12 +63,11 @@
                     <div class="row row-featured row-featured-category row-featured-company">
                         <div class="col-lg-12  box-title no-border" style="background: #ffffff ;">
                             <div class="inner">
-                                <div class="inner">
                             <h2>    <a href="{% url 'diapers:brands' %}"><span>Главная</span></a> >
                                     <a href="{% url 'diapers:series' brand.id %}"><span>{{brand.name}}</span></a>
                                 > {{series.name}}
                             </h2>
-                        </div>
+                            </div>
                         </div>
                         {% for sizes_item in sizes_output %}
 
@@ -133,7 +132,6 @@
 
       <script src="{% static 'diapers/js/jquery.min.js' %}"  type="text/javascript"></script>
       <script src="{% static 'diapers/js/bootstrap.min.js' %}"  type="text/javascript"></script>
-    </div>
 </body>
 
 </html>
