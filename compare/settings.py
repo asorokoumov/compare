@@ -80,7 +80,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'OPTIONS': {
-            'read_default_file': 'config/default.conf',
+            'read_default_file': os.path.join(BASE_DIR, 'config/default.conf'),
         },
     }
 }
