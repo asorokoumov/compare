@@ -103,6 +103,7 @@ def show_sizes(request, brand_id, series_id):
             raise Http404("Series does not exist")
     except Brand.DoesNotExist:
         raise Http404("Brand does not exist")
+    sizes_output.sort(key=lambda x: x['min_weight'])
     return render(request, 'diapers/sizes.html', {'brand': brand,
                                                   'series': series,
                                                   'sizes_output': sizes_output})
