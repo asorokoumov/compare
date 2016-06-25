@@ -4,7 +4,6 @@ from configobj import ConfigObj
 
 basic = ConfigObj('diapers/utils/data_config/basic.ini')
 brands = ConfigObj('diapers/utils/data_config/brands.ini')
-shops = ConfigObj('diapers/utils/data_config/shop_main.ini')
 
 
 class Brand (models.Model):
@@ -43,11 +42,6 @@ class Seller (models.Model):
 
     def __str__(self):
         return self.name
-
-    @staticmethod
-    def set_default_data():
-        for shop in shops:
-            Seller.objects.update_or_create(name=shop, url=shops[shop]['url'])
 
 
 class Type (models.Model):

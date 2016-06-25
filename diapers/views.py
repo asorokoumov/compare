@@ -17,7 +17,6 @@ logger = logging.getLogger('compare')
 
 shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
 shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
-shop_main = ConfigObj('compare/diapers/utils/data_config/shop_main.ini')
 
 
 def index(request):
@@ -208,7 +207,8 @@ def update_prices_and_availability(request):
 
 def update_product_list(request):
     items_added = {}
-    for shop in shop_main:
+    shops = Seller.objects.all()
+    for shop in shops:
         items_added[shop] = parser.parse_shop_catalog(shop, True)
     return render(request, 'diapers/parse/update_product_list.html', {'items_added': items_added})
 
