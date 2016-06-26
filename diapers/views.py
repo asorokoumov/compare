@@ -15,8 +15,8 @@ from configobj import ConfigObj
 
 logger = logging.getLogger('compare')
 
-shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
-shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
+shop_xpath = ConfigObj('diapers/utils/data_config/shop_xpath.ini')
+shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
 
 
 
@@ -215,7 +215,7 @@ def update_product_list(request):
 
 
 def update_brand_list(request):
-    brands = ConfigObj('compare/diapers/utils/data_config/brands.ini')
+    brands = ConfigObj('diapers/utils/data_config/brands.ini')
     items_added = {}
     for brand in brands:
         items_added[brand] = Brand.objects.update_or_create(name=str(brand))

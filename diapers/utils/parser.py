@@ -8,8 +8,8 @@ import crutch
 
 from configobj import ConfigObj
 
-shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
-shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
+shop_xpath = ConfigObj('diapers/utils/data_config/shop_xpath.ini')
+shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
 
 
 __author__ = 'anton.sorokoumov'
@@ -92,7 +92,7 @@ def is_in_stock(tree, stock_object):
 
 def parse_shop_catalog(seller_name, check_stock=True):
     items_added = 0
-    for brand in shop_urls[seller_name]:
+    for brand in shop_urls[seller_name.name]:
         category_urls = shop_urls[seller_name][brand]
         if type(category_urls) is str:
             category_urls = {category_urls}
