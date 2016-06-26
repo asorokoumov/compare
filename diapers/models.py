@@ -2,8 +2,8 @@
 from django.db import models
 from configobj import ConfigObj
 
-basic = ConfigObj('diapers/utils/data_config/basic.ini')
-brands = ConfigObj('diapers/utils/data_config/brands.ini')
+basic = ConfigObj('compare/diapers/utils/data_config/basic.ini')
+brands = ConfigObj('compare/diapers/utils/data_config/brands.ini')
 
 
 class Brand (models.Model):

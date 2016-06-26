@@ -215,7 +215,7 @@ def update_product_list(request):
 
 
 def update_brand_list(request):
-    brands = ConfigObj('diapers/utils/data_config/brands.ini')
+    brands = ConfigObj('compare/diapers/utils/data_config/brands.ini')
     items_added = {}
     for brand in brands:
         items_added[brand] = Brand.objects.update_or_create(name=str(brand))
