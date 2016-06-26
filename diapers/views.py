@@ -19,6 +19,7 @@ shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
 shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
 
 
+
 def index(request):
     return render(request, 'diapers/index.html')
 
@@ -40,7 +41,7 @@ def show_brands(request):
     brand_output = []
     for brand in brands:
         if brand.name != 'Unknown_brand':
-            if len(Stock.objects.filter(product=Product.objects.filter(brand=brand))) > 0:
+            if len(Stock.objects.filter(product=Product.objects.filter(brand=brand))):
                 brand_output_item = {'series_count': len(Series.objects.filter(brand=brand)),
                                      'stock_count': len(Stock.objects.filter(product=Product.objects.filter(brand=brand))),
                                      'brand_id': brand.id,
@@ -211,6 +212,14 @@ def update_product_list(request):
     for shop in shops:
         items_added[shop] = parser.parse_shop_catalog(shop, True)
     return render(request, 'diapers/parse/update_product_list.html', {'items_added': items_added})
+
+
+def update_brand_list(request):
+    brands = ConfigObj('diapers/utils/data_config/brands.ini')
+    items_added = {}
+    for brand in brands:
+        items_added[brand] = Brand.objects.update_or_create(name=str(brand))
+    return render(request, 'diapers/parse/update_brand_list.html', {'items_added': items_added})
 
 
 def recreate(request):

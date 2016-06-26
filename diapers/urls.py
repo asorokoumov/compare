@@ -16,6 +16,7 @@ urlpatterns = [
 
 
     url(r'^parse/update_product_list/$', views.update_product_list, name='update_product_list'),
+    url(r'^parse/update_brand_list/$', views.update_brand_list, name='update_brand_list'),
     url(r'^parse/recreate/$', views.recreate, name='recreate'),
     url(r'^parse/prices/$', views.update_prices_and_availability, name='update_prices_and_availability'),
     url(r'^parse/manual/$', views.manual_parse, name='manual'),

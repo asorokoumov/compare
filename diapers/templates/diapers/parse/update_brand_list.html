@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Update brand list</title>
+</head>
+<body>
+<a href="{% url 'diapers:admin' %}">index</a>
+<br>
+<br>
+<ul>
+{% for brand, items in items_added.items %}
+    <li>{{ brand }} : {{ items }}</li>
+{% endfor %}
+</ul>
+</body>
+</html>
