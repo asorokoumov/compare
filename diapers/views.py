@@ -19,7 +19,6 @@ shop_xpath = ConfigObj('diapers/utils/data_config/shop_xpath.ini')
 shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
 
 
-
 def index(request):
     return render(request, 'diapers/index.html')
 

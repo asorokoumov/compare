@@ -90,14 +90,14 @@ def is_in_stock(tree, stock_object):
         return False
 
 
-def parse_shop_catalog(seller_name, check_stock=True):
+def parse_shop_catalog(seller, check_stock=True):
     items_added = 0
-    for brand in shop_urls[seller_name.name]:
-        category_urls = shop_urls[seller_name][brand]
+    for brand in shop_urls[seller.name]:
+        category_urls = shop_urls[seller.name][brand]
         if type(category_urls) is str:
             category_urls = {category_urls}
         for category_url in category_urls:
-            items_added += parse_catalog(seller=Seller.objects.get(name=seller_name),
+            items_added += parse_catalog(seller=seller,
                                          brand=Brand.objects.get(name=brand),
                                          category_url=category_url, check_stock=check_stock)
     return items_added
