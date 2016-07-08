@@ -43,6 +43,7 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
                                    status="new").save()
                     items_added += 1
         except requests.exceptions.ConnectionError:
+            next_url = []
             logger.debug('ConnectionError, Connection refused')
     logger.debug('Parced: ' + str(items_added))
     return items_added
