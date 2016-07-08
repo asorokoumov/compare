@@ -29,6 +29,7 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
             page = requests.get(next_url)
             tree = html.fromstring(page.text)
             next_url = tree.xpath(shop_xpath[seller.name]['next_url_xpath'])
+            next_url = next_url[0]
             next_url = crutch.next_url(next_url, seller)
             items = tree.xpath(shop_xpath[seller.name]['item_xpath'])
             for item in items:
