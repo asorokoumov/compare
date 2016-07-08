@@ -6,7 +6,7 @@ def item_url(url, seller):
 
 
 def next_url(url, seller):
-    if seller.name == "Akusherstvo":
+    if seller.name == "Akusherstvo" and url:
         return 'magaz.php' + url
     else:
         return url
