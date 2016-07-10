@@ -3,13 +3,14 @@ import requests
 import urllib2
 from lxml import html, etree
 from diapers.models import Brand, ProductPreview, Series, Seller, Stock
-import logging
 import crutch
+import logging
+
 
 from configobj import ConfigObj
 
-shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
-shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
+shop_xpath = ConfigObj('diapers/utils/data_config/shop_xpath.ini')
+shop_urls = ConfigObj('diapers/utils/data_config/shop_urls.ini')
 
 
 __author__ = 'anton.sorokoumov'
@@ -23,7 +24,8 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
     next_url = [category_url]
     items_added = 0
     while next_url:
-        next_url = next_url[0]
+        if next_url and type(next_url) == list:
+            next_url = next_url[0]
         next_url = seller.url + next_url
         try:
             page = requests.get(next_url)
@@ -39,6 +41,7 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
                 item_url[0] = crutch.item_url(item_url[0], seller)
                 if not (any(ProductPreview.objects.filter(url=item_url[0])) & check_stock):
                     description = u''.join(item_title)
+                    description = crutch.description(description, seller)
                     ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],
                                    status="new").save()
                     items_added += 1
