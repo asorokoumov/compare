@@ -17,6 +17,7 @@ logger = logging.getLogger('compare')
 
 shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
 shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
+brand_list = ConfigObj('compare/diapers/utils/data_config/brands.ini')
 
 
 def index(request):
@@ -214,9 +215,8 @@ def update_product_list(request):
 
 
 def update_brand_list(request):
-    brands = ConfigObj('diapers/utils/data_config/brands.ini')
     items_added = {}
-    for brand in brands:
+    for brand in brand_list:
         items_added[brand] = Brand.objects.update_or_create(name=str(brand))
     return render(request, 'diapers/parse/update_brand_list.html', {'items_added': items_added})
 
