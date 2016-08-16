@@ -5,6 +5,8 @@ logger = logging.getLogger('compare')
 def item_url(url, seller):
     if seller.name == "Korablik":
         return url.split('?')[0]
+    elif seller.name == "Akusherstvo":
+        return '/'+url
     else:
         return url
 
