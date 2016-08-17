@@ -11,6 +11,8 @@ from diapers.utils import parser, suggester
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from configobj import ConfigObj
+from django.http import HttpResponse
+import simplejson
 
 
 logger = logging.getLogger('compare')
@@ -21,7 +23,9 @@ brand_list = ConfigObj('compare/diapers/utils/data_config/brands.ini')
 
 
 def index(request):
-    return render(request, 'diapers/index.html')
+    brands = Brand.objects.filter(~Q(name='Unknown_brand')).order_by('name')
+    series = Series.objects.filter(~Q(name='Unknown_series'), ~Q(name='No series')).order_by('name')
+    return render(request, 'diapers/index.html', {'brands': brands, 'series': series})
 
 
 def status(request):
@@ -251,3 +255,25 @@ def recreate(request):
         #      'items_added_ozon': items_added_ozon,
         #       'items_added': items_added_korablik + items_added_detmir  # + items_added_ozon
     })
+
+
+def get_series(request, brand_id):
+    brand = Brand.objects.get(pk=brand_id)
+    series = Series.objects.filter(~Q(name='No series'), brand=brand)
+    series_dict = {}
+    for series_item in series:
+        series_dict[series_item.id] = series_item.name
+    return HttpResponse(simplejson.dumps(series_dict), content_type="application/json")
+
+
+def get_brand(request, brand_id, series_id):
+    brands_dict = {}
+    if brand_id == '-1':
+        for br in Brand.objects.all():
+            series = Series.objects.filter(brand=br, id=series_id)
+            if series:
+                brands_dict[br.id] = br.name
+    else:
+        br = Brand.objects.get(pk=brand_id)
+        brands_dict[br.id] = br.name
+    return HttpResponse(simplejson.dumps(brands_dict), content_type="application/json")

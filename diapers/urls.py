@@ -9,7 +9,7 @@ urlpatterns = [
     url(r'^admin/$', views.admin, name='admin'),
 
     # TODO create human understanding urls
-    url(r'^$', views.show_brands, name='brands'),
+    url(r'^$', views.index, name='index'),
     url(r'^(?P<brand_id>[0-9]+)/$', views.show_series, name='series'),
     url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/$', views.show_sizes, name='sizes'),
     url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/(?P<size>.+)/$', views.show_products, name='products'),
@@ -21,4 +21,8 @@ urlpatterns = [
     url(r'^parse/prices/$', views.update_prices_and_availability, name='update_prices_and_availability'),
     url(r'^parse/manual/$', views.manual_parse, name='manual'),
     url(r'^parse/manual_parse_result/$', views.manual_parse_result, name='manual_parse_result'),
+
+    url(r'^get_series/(?P<brand_id>[-\w]+)/', views.get_series, name='get_series'),
+    url(r'^get_brand/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/', views.get_brand, name='get_brand'),
+
 ]
