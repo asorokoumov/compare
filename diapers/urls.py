@@ -23,6 +23,7 @@ urlpatterns = [
     url(r'^parse/manual_parse_result/$', views.manual_parse_result, name='manual_parse_result'),
 
     url(r'^get_series/(?P<brand_id>[-\w]+)/', views.get_series, name='get_series'),
-    url(r'^get_brand/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/', views.get_brand, name='get_brand'),
+    url(r'^get_brands/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/', views.get_brands, name='get_brand'),
+    url(r'^get_sizes/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/', views.get_sizes, name='get_sizes'),
 
 ]

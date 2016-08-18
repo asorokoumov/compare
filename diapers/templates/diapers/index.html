@@ -41,8 +41,9 @@
   <div class="col-md-4">
     <select id="size" name="size" class="form-control">
       <option value="-1">Размер</option>
-      <option value="1">Option one</option>
-      <option value="2">Option two</option>
+        {% for size_item in sizes %}
+          <option value="{{size_item}}">{{size_item}}</option>
+        {% endfor %}
     </select>
   </div>
 </div>
@@ -92,23 +93,72 @@
                 });
             }
         })
+
+        series_id = $('select#series').val()
+        request_url = '/get_sizes/' + brand_id + '/' + series_id + '/';
+        $.ajax({
+            url: request_url,
+            success: function(data){
+                $('select#size').find('option').remove().end()
+                    .append('<option value="-1">Размер</option>')
+
+                $.each(data, function(key, value){
+                    $('select#size').append($("<option></option>").text(value).val(value));
+
+                });
+            }
+        })
     })
     $('select#series').change(function(){
         series_id = $(this).val();
         brand_id = $('select#brand').val();
-        request_url = '/get_brand/' + brand_id + '/' + series_id + '/';
+        request_url = '/get_brands/' + brand_id + '/' + series_id + '/';
         $.ajax({
             url: request_url,
             success: function(data){
                 $.each(data, function(key, value){
                     $('select#brand').val(key);
+                    brand_id = key;
+                    brand_name = $('select#brand').text();
+                    series_val = $('select#series').val()
+
+                    request_url = '/get_series/' + brand_id + '/';
+                    $.ajax({
+                        url: request_url,
+                        success: function(data){
+                            $('select#series').find('option').remove().end()
+                                .append('<option value="-1">Серия</option>')
+
+                            $.each(data, function(key, value){
+                                $('select#series').append($("<option></option>").text(value).val(key));
+
+                            $('select#series').val(series_val);
+                            });
+                        }
+                    })
+
+                });
+            }
+        })
+
+
+
+        request_url = '/get_sizes/' + brand_id + '/' + series_id + '/';
+        $.ajax({
+            url: request_url,
+            success: function(data){
+                $('select#size').find('option').remove().end()
+                    .append('<option value="-1">Размер</option>')
+
+                $.each(data, function(key, value){
+                    $('select#size').append($("<option></option>").text(value).val(value));
 
                 });
             }
         })
     })
 });
-</script >
+</script>
 
 </html>
 

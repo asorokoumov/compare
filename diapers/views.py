@@ -25,7 +25,12 @@ brand_list = ConfigObj('compare/diapers/utils/data_config/brands.ini')
 def index(request):
     brands = Brand.objects.filter(~Q(name='Unknown_brand')).order_by('name')
     series = Series.objects.filter(~Q(name='Unknown_series'), ~Q(name='No series')).order_by('name')
-    return render(request, 'diapers/index.html', {'brands': brands, 'series': series})
+    sizes_products = Product.objects.values('size').distinct().order_by('size')
+    sizes = []
+    for size in sizes_products:
+        sizes.append(size['size'])
+    sizes.sort()
+    return render(request, 'diapers/index.html', {'brands': brands, 'series': series, 'sizes': sizes})
 
 
 def status(request):
@@ -258,15 +263,39 @@ def recreate(request):
 
 
 def get_series(request, brand_id):
-    brand = Brand.objects.get(pk=brand_id)
-    series = Series.objects.filter(~Q(name='No series'), brand=brand)
+    if brand_id != '-1':
+        brand = Brand.objects.get(pk=brand_id)
+        series = Series.objects.filter(~Q(name='No series'), brand=brand)
+    else:
+        series = Series.objects.filter(~Q(name='Unknown_series'), ~Q(name='No series')).order_by('name')
     series_dict = {}
     for series_item in series:
         series_dict[series_item.id] = series_item.name
     return HttpResponse(simplejson.dumps(series_dict), content_type="application/json")
 
 
-def get_brand(request, brand_id, series_id):
+def get_sizes(request, brand_id, series_id):
+    if brand_id != '-1':
+        brand = Brand.objects.get(pk=brand_id)
+        if series_id != '-1':
+            series = Series.objects.filter(brand=brand, id=series_id)
+            sizes_products = Product.objects.values('size').filter(brand=brand, series=series).distinct().order_by('size')
+        else:
+            sizes_products = Product.objects.values('size').filter(brand=brand).distinct().order_by('size')
+    else:
+        if series_id != '-1':
+            series = Series.objects.filter(id=series_id)
+            sizes_products = Product.objects.values('size').filter(series=series).distinct().order_by('size')
+        else:
+            sizes_products = Product.objects.values('size').distinct().order_by('size')
+    sizes = []
+    for size in sizes_products:
+        sizes.append(size['size'])
+    sizes.sort()
+    return HttpResponse(simplejson.dumps(sizes), content_type="application/json")
+
+
+def get_brands(request, brand_id, series_id):
     brands_dict = {}
     if brand_id == '-1':
         for br in Brand.objects.all():
