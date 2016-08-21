@@ -2,11 +2,9 @@
 <html lang="en">
 
 <head>
-    {% load staticfiles %}
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+    {% load staticfiles %}
     <link rel="shortcut icon" href="http://templatecycle.com/demo/bootclassified-v1.4/dist/assets/ico/favicon.png">
 
 
@@ -21,9 +19,9 @@
 </head>
 
 <body class=" pace-done">
-        <h1>Где купить самые дешевые подгузники {{header.brand}} {{header.series}} {{header.size}}</h1>
+        <h1>Где купить самые дешевые подгузники {{header.brand.name}} {{header.series}} {{header.size}}</h1>
         <p><b>Дешевле всего покупать:</b><br>
-        {{best.product.brand}} {{ best.product.series }} {{ best.product.size }}
+        {{best.product.brand.name}} {{ best.product.series }} {{ best.product.size }}
         ({{ best.product.min_weight|floatformat  }} - {{ best.product.max_weight|floatformat  }} кг) упаковку на
         {{ best.product.count }} штук в магазине {{ best.seller }}<br>
         Цена за штуку: {{ best.price_unit|floatformat:-2 }} руб<br>
@@ -48,7 +46,7 @@
             </thead>
             {% for stock_item in stock_list %}
                 <tr>
-                    <td>{{ stock_item.product.brand }}</td>
+                    <td>{{ stock_item.product.brand.name }}</td>
                     <td>{{ stock_item.product.series }}</td>
                     <td>{{ stock_item.product.size }}</td>
                     <td>{{ stock_item.product.min_weight|floatformat  }} - {{ stock_item.product.max_weight|floatformat  }} кг</td>

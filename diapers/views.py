@@ -329,20 +329,20 @@ def products(request, brand_id, series_id, size):
 
     # header
     header = {}
-    if brand_id:
+    if not brand_id == 'False':
         header['brand'] = Brand.objects.get(pk=brand_id)
-    if series_id:
+    if not series_id == 'False':
         header['series'] = Series.objects.get(pk=series_id)
-    if size:
+    if not size == 'False':
         header['size'] = size
 
     # search products
     product_list = Product.objects.all()
-    if brand_id:
+    if not brand_id == 'False':
         product_list = product_list.filter(brand_id=brand_id)
-    if series_id:
+    if not series_id == 'False':
         product_list = product_list.filter(series_id=series_id)
-    if size:
+    if not size == 'False':
         product_list = product_list.filter(size=size)
     stock_list = []
     for product in product_list:
@@ -353,7 +353,7 @@ def products(request, brand_id, series_id, size):
     stock_list.sort(key=lambda x: x.price_unit)
     best = stock_list[0]
     profit_rub = stock_list[-1].price_unit - stock_list[0].price_unit
-    profit_percent = 100- stock_list[0].price_unit*100/stock_list[-1].price_unit
+    profit_percent = 100 - stock_list[0].price_unit*100/stock_list[-1].price_unit
 
     return render(request, 'diapers/products.html', {'header': header, 'stock_list': stock_list, 'best': best,
                                                      'profit_rub': profit_rub, 'profit_percent': profit_percent})
