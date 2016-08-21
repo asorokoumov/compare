@@ -9,7 +9,6 @@ urlpatterns = [
     url(r'^admin/$', views.admin, name='admin'),
 
     # TODO create human understanding urls
-    url(r'^$', views.index, name='index'),
     url(r'^(?P<brand_id>[0-9]+)/$', views.show_series, name='series'),
     url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/$', views.show_sizes, name='sizes'),
     url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/(?P<size>.+)/$', views.show_products, name='products'),
@@ -22,8 +21,16 @@ urlpatterns = [
     url(r'^parse/manual/$', views.manual_parse, name='manual'),
     url(r'^parse/manual_parse_result/$', views.manual_parse_result, name='manual_parse_result'),
 
+
+    #  New design
+    url(r'^$', views.index, name='index'),
+
     url(r'^get_series/(?P<brand_id>[-\w]+)/', views.get_series, name='get_series'),
     url(r'^get_brands/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/', views.get_brands, name='get_brand'),
     url(r'^get_sizes/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/', views.get_sizes, name='get_sizes'),
+
+    url(r'^search/$', views.search, name='search'),
+    url(r'^podguzniki/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/(?P<size>[-\w]+)/$', views.products, name='products'),
+
 
 ]

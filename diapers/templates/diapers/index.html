@@ -6,70 +6,59 @@
 </head>
 <body>
 
-<form class="form-horizontal">
+    <form class="form-horizontal" action="{% url 'diapers:search' %}" method="post">
+        {% csrf_token %}
+        <!-- Select Basic -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="brand"></label>
+          <div class="col-md-4">
+            <select id="brand" name="brand" class="form-control">
+              <option value="-1">Бренд</option>
+                {% for brand_item in brands %}
+                  <option value="{{brand_item.id}}">{{brand_item.name}}</option>
+                {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="series"></label>
+          <div class="col-md-4">
+            <select id="series" name="series" class="form-control">
+                <option value="-1">Серия</option>
+                {% for series_item in series %}
+                  <option value="{{series_item.id}}">{{series_item.name}}</option>
+                {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <!-- Select Basic -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="size"></label>
+          <div class="col-md-4">
+            <select id="size" name="size" class="form-control">
+              <option value="-1">Размер</option>
+                {% for size_item in sizes %}
+                  <option value="{{size_item}}">{{size_item}}</option>
+                {% endfor %}
+            </select>
+          </div>
+        </div>
 
 
-<!-- Select Basic -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="brand"></label>
-  <div class="col-md-4">
-    <select id="brand" name="brand" class="form-control">
-      <option value="-1">Бренд</option>
-        {% for brand_item in brands %}
-          <option value="{{brand_item.id}}">{{brand_item.name}}</option>
-        {% endfor %}
-    </select>
-  </div>
-</div>
-
-<!-- Select Basic -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="series"></label>
-  <div class="col-md-4">
-    <select id="series" name="series" class="form-control">
-        <option value="-1">Серия</option>
-        {% for series_item in series %}
-          <option value="{{series_item.id}}">{{series_item.name}}</option>
-        {% endfor %}
-    </select>
-  </div>
-</div>
-
-<!-- Select Basic -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="size"></label>
-  <div class="col-md-4">
-    <select id="size" name="size" class="form-control">
-      <option value="-1">Размер</option>
-        {% for size_item in sizes %}
-          <option value="{{size_item}}">{{size_item}}</option>
-        {% endfor %}
-    </select>
-  </div>
-</div>
-
-<!-- Text input-->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="weight"></label>
-  <div class="col-md-4">
-  <input id="weight" name="weight" type="text" placeholder="кг" class="form-control input-md">
-
-  </div>
-</div>
-
-<!-- Button -->
-<div class="form-group">
-  <label class="col-md-4 control-label" for="submit"></label>
-  <div class="col-md-4">
-    <button id="submit" name="submit" class="btn btn-primary">Найти</button>
-  </div>
-</div>
+        <!-- Button -->
+        <div class="form-group">
+          <label class="col-md-4 control-label" for="submit"></label>
+          <div class="col-md-4">
+            <button id="submit" class="btn btn-primary">Найти</button>
+          </div>
+        </div>
 
 
 
-</form>
-
-
+    </form>
 
 </body>
 

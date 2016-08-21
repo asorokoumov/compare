@@ -8,7 +8,7 @@ import logging
 from diapers.models import Brand, Series, Product, Stock, Seller, Gender, Type, ProductPreview, PreviewParseHistory
 from django.db.models import Q
 from diapers.utils import parser, suggester
-from django.http import HttpResponseRedirect
+from django.http import HttpResponsePermanentRedirect
 from django.core.urlresolvers import reverse
 from configobj import ConfigObj
 from django.http import HttpResponse
@@ -24,6 +24,9 @@ brand_list = ConfigObj('compare/diapers/utils/data_config/brands.ini')
 
 def index(request):
     brands = Brand.objects.filter(~Q(name='Unknown_brand')).order_by('name')
+    for brand in brands:
+        if not len(Stock.objects.filter(product=Product.objects.filter(brand=brand))):
+            brands = brands.filter(~Q(pk=brand.id))
     series = Series.objects.filter(~Q(name='Unknown_series'), ~Q(name='No series')).order_by('name')
     sizes_products = Product.objects.values('size').distinct().order_by('size')
     sizes = []
@@ -186,7 +189,7 @@ def manual_parse_result(request):
                                                                'is_visible': True})
 
     new_stock.save()
-    return HttpResponseRedirect(reverse('diapers:manual'))
+    return HttpResponsePermanentRedirect(reverse('diapers:manual'))
 
 
 def manual_parse(request):
@@ -306,3 +309,52 @@ def get_brands(request, brand_id, series_id):
         br = Brand.objects.get(pk=brand_id)
         brands_dict[br.id] = br.name
     return HttpResponse(simplejson.dumps(brands_dict), content_type="application/json")
+
+
+def search(request):
+    brand_id = request.POST.get('brand', False)
+    if brand_id == '-1':
+        brand_id = False
+    series_id = request.POST.get('series', False)
+    if series_id == '-1':
+        series_id = False
+    size = request.POST.get('size', False)
+    if size == '-1':
+        size = False
+    return HttpResponsePermanentRedirect\
+        (reverse('diapers:products', kwargs={'brand_id': brand_id, 'series_id': series_id, 'size': size}))
+
+
+def products(request, brand_id, series_id, size):
+
+    # header
+    header = {}
+    if brand_id:
+        header['brand'] = Brand.objects.get(pk=brand_id)
+    if series_id:
+        header['series'] = Series.objects.get(pk=series_id)
+    if size:
+        header['size'] = size
+
+    # search products
+    product_list = Product.objects.all()
+    if brand_id:
+        product_list = product_list.filter(brand_id=brand_id)
+    if series_id:
+        product_list = product_list.filter(series_id=series_id)
+    if size:
+        product_list = product_list.filter(size=size)
+    stock_list = []
+    for product in product_list:
+        stock_objects = Stock.objects.filter(product=product)
+        for stock_object in stock_objects:
+            if stock_object.is_visible:
+                stock_list.append(stock_object)
+    stock_list.sort(key=lambda x: x.price_unit)
+    best = stock_list[0]
+    profit_rub = stock_list[-1].price_unit - stock_list[0].price_unit
+    profit_percent = stock_list[0].price_unit*100/stock_list[-1].price_unit
+
+    return render(request, 'diapers/products.html', {'header': header, 'stock_list': stock_list, 'best': best,
+                                                     'profit_rub': profit_rub, 'profit_percent': profit_percent})
+
