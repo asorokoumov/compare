@@ -30,7 +30,9 @@ urlpatterns = [
     url(r'^get_sizes/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/', views.get_sizes, name='get_sizes'),
 
     url(r'^search/$', views.search, name='search'),
-    url(r'^podguzniki/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/(?P<size>[-\w]+)/$', views.products, name='products'),
-
+    url(r'^podguzniki/(?P<brand>[-\w]+)/(?P<series>[-\w]+)/(?P<size>[-\w]+)/$', views.products, name='products'),
+    url(r'^podguzniki/(?P<brand>[-\w]+)/(?P<series>[-\w]+)/$', views.products, name='products'),
+    url(r'^podguzniki/(?P<brand>[-\w]+)/$', views.products, name='products'),
+    url(r'^podguzniki/$', views.products, name='products'),
 
 ]

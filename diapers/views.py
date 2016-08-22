@@ -312,37 +312,48 @@ def get_brands(request, brand_id, series_id):
 
 
 def search(request):
-    brand_id = request.POST.get('brand', False)
-    if brand_id == '-1':
-        brand_id = False
-    series_id = request.POST.get('series', False)
-    if series_id == '-1':
-        series_id = False
-    size = request.POST.get('size', False)
-    if size == '-1':
-        size = False
-    return HttpResponsePermanentRedirect\
-        (reverse('diapers:products', kwargs={'brand_id': brand_id, 'series_id': series_id, 'size': size}))
+    kwargs = {}
+    try:
+        brand_id = request.POST.get('brand', False)
+        brand = Brand.objects.get(pk=brand_id)
+        kwargs['brand'] = brand.name
+    except Brand.DoesNotExist:
+        brand_id = 'NoBrand'
+
+    try:
+        series_id = request.POST.get('series', False)
+        series = Series.objects.get(pk=series_id)
+        kwargs['series'] = series.name
+    except Series.DoesNotExist:
+        series_id = 'NoSeries'
+
+    size = request.POST.get('size', '-1')
+    if not size == '-1':
+        kwargs['size'] = size
+
+    return HttpResponsePermanentRedirect(reverse('diapers:products', kwargs=kwargs))
 
 
-def products(request, brand_id, series_id, size):
+def products(request, brand='NoBrand', series='NoSeries', size='NoSize'):
 
     # header
     header = {}
-    if not brand_id == 'False':
-        header['brand'] = Brand.objects.get(pk=brand_id)
-    if not series_id == 'False':
-        header['series'] = Series.objects.get(pk=series_id)
-    if not size == 'False':
+    if not brand == 'NoBrand':
+        header['brand'] = Brand.objects.get(name=brand)
+    if not series == 'NoSeries':
+        header['series'] = Series.objects.get(name=series)
+    if not size == 'NoSize':
         header['size'] = size
 
     # search products
     product_list = Product.objects.all()
-    if not brand_id == 'False':
-        product_list = product_list.filter(brand_id=brand_id)
-    if not series_id == 'False':
-        product_list = product_list.filter(series_id=series_id)
-    if not size == 'False':
+    if not brand == 'NoBrand':
+        brand_id = Brand.objects.get(name=brand)
+        product_list = product_list.filter(brand=brand_id)
+    if not series == 'NoSeries':
+        series_id = Series.objects.get(name=series)
+        product_list = product_list.filter(series=series_id)
+    if not size == 'NoSize':
         product_list = product_list.filter(size=size)
     stock_list = []
     for product in product_list:
