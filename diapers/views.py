@@ -193,7 +193,8 @@ def manual_parse_result(request):
 
 
 def manual_parse(request):
-    chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
+    chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip'),
+                                                    brand=Brand.objects.get(name='Pampers')).order_by('?')
     chosen_product = chosen_products.first()
 
     return render(request, 'diapers/parse/manual_parse.html',
