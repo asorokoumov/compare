@@ -362,9 +362,15 @@ def products(request, brand='NoBrand', series='NoSeries', size='NoSize'):
             if stock_object.is_visible:
                 stock_list.append(stock_object)
     stock_list.sort(key=lambda x: x.price_unit)
-    best = stock_list[0]
-    profit_rub = stock_list[-1].price_unit - stock_list[0].price_unit
-    profit_percent = 100 - stock_list[0].price_unit*100/stock_list[-1].price_unit
+    try:
+        best = stock_list[0]
+        profit_rub = stock_list[-1].price_unit - stock_list[0].price_unit
+        profit_percent = 100 - stock_list[0].price_unit * 100 / stock_list[-1].price_unit
+    except IndexError:
+        best = []
+        profit_rub = ''
+        profit_percent = ''
+
 
     return render(request, 'diapers/products.html', {'header': header, 'stock_list': stock_list, 'best': best,
                                                      'profit_rub': profit_rub, 'profit_percent': profit_percent})
