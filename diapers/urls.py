@@ -5,6 +5,7 @@ from . import views
 
 urlpatterns = [
     url(r'^status/$', views.status, name='status'),
+    url(r'^test/$', views.test, name='test'),
     url(r'^todo/$', views.todo, name='todo'),
     url(r'^admin/$', views.admin, name='admin'),
 

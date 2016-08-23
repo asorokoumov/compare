@@ -44,6 +44,10 @@ def todo(request):
     return render(request, 'diapers/todo.html')
 
 
+def test(request):
+    return render(request, 'diapers/test.html')
+
+
 def admin(request):
     return render(request, 'diapers/admin.html')
 
