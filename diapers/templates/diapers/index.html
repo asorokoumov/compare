@@ -65,7 +65,8 @@
             <h1 class="cover-heading">Поиск дешевых подгузников</h1>
             <p class="lead">Самые большие упаковки не всегда самые выгодные.</p>
             <p class="lead">
-              <form>
+              <form class="form-horizontal" action="{% url 'diapers:search' %}" method="post">
+                 {% csrf_token %}
                 <div class="form-group">
                   <div class="row">
                     <div class="col-xs-12 col-md-4" style="padding-right:5px; padding-left:5px; padding-bottom:5px">
