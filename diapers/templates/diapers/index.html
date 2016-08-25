@@ -1,73 +1,127 @@
 <!DOCTYPE html>
-<head>
-    <meta charset="UTF-8">
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
     {% load staticfiles %}
-    <title>Index page</title>
-</head>
-<body>
 
-    <form class="form-horizontal" action="{% url 'diapers:search' %}" method="post">
-        {% csrf_token %}
-        <!-- Select Basic -->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="brand"></label>
-          <div class="col-md-4">
-            <select id="brand" name="brand" class="form-control">
-              <option value="-1">Бренд</option>
-                {% for brand_item in brands %}
-                  <option value="{{brand_item.id}}">{{brand_item.name}}</option>
-                {% endfor %}
-            </select>
+    <link rel="icon" href="../../favicon.ico">
+
+    <title>Cover Template for Bootstrap</title>
+
+    <!-- Bootstrap core CSS -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" type="text/css" href="{% static 'diapers/css/cover.css' %}" />
+
+
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="site-wrapper">
+
+      <div class="site-wrapper-inner">
+
+        <div class="cover-container">
+
+         <div class="masthead clearfix ">
+             <nav class="navbar navbar-default">
+             <div class="navbar-header">
+              <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1" aria-expanded="false">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+              </button>
+               <a class="navbar-brand" href="#">
+              Sarek</a>
+            </div>
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="#">Свяжитесь с нами</a></li>
+
+          </ul>
+        </div><!-- /.navbar-collapse -->
+                 </nav>
           </div>
+
+
+
+
+
+          <div class="inner cover">
+            <h1 class="cover-heading">Поиск дешевых подгузников</h1>
+            <p class="lead">Самые большие упаковки не всегда самые выгодные.</p>
+            <p class="lead">
+              <form>
+                <div class="form-group">
+                  <div class="row">
+                    <div class="col-xs-12 col-md-4" style="padding-right:5px; padding-left:5px; padding-bottom:5px">
+                        <select id="brand" name="brand" class="form-control">
+                          <option value="-1">Бренд</option>
+                            {% for brand_item in brands %}
+                              <option value="{{brand_item.id}}">{{brand_item.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-md-4" style="padding-right:5px; padding-left:5px; padding-bottom:5px">
+                        <select id="series" name="series" class="form-control">
+                            <option value="-1">Серия</option>
+                            {% for series_item in series %}
+                              <option value="{{series_item.id}}">{{series_item.name}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-xs-12 col-md-4" style="padding-right:5px; padding-left:5px; padding-bottom:5px">
+                        <select id="size" name="size" class="form-control">
+                          <option value="-1">Размер</option>
+                            {% for size_item in sizes %}
+                              <option value="{{size_item}}">{{size_item}}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                  </div>
+
+
+                </div>
+                <button type="submit" class="btn btn-lg btn-default">Найти</button>
+              </form>
+            </p>
+          </div>
+          <div class="mastfoot">
+            <div class="inner">
+              <p>Мы работаем для Вас <a href="http://getbootstrap.com">Bootstrap</a>, by <a href="https://twitter.com/mdo">@mdo</a>.</p>
+            </div>
+          </div>
+
         </div>
 
-        <!-- Select Basic -->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="series"></label>
-          <div class="col-md-4">
-            <select id="series" name="series" class="form-control">
-                <option value="-1">Серия</option>
-                {% for series_item in series %}
-                  <option value="{{series_item.id}}">{{series_item.name}}</option>
-                {% endfor %}
-            </select>
-          </div>
-        </div>
+      </div>
 
-        <!-- Select Basic -->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="size"></label>
-          <div class="col-md-4">
-            <select id="size" name="size" class="form-control">
-              <option value="-1">Размер</option>
-                {% for size_item in sizes %}
-                  <option value="{{size_item}}">{{size_item}}</option>
-                {% endfor %}
-            </select>
-          </div>
-        </div>
+    </div>
 
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 
-        <!-- Button -->
-        <div class="form-group">
-          <label class="col-md-4 control-label" for="submit"></label>
-          <div class="col-md-4">
-            <button id="submit" class="btn btn-primary">Найти</button>
-          </div>
-        </div>
-
-
-
-    </form>
-
-</body>
-
-<script src="{% static 'diapers/js/jquery.min.js' %}"  type="text/javascript"></script>
-<script src="{% static 'diapers/js/script.js' %}"  type="text/javascript"></script>
-
-
+    <script src="{% static 'diapers/js/jquery.min.js' %}"  type="text/javascript"></script>
+    <script src="{% static 'diapers/js/script.js' %}"  type="text/javascript"></script>
+  </body>
 </html>
-
-
-
 
