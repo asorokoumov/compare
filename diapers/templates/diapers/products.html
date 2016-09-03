@@ -58,18 +58,16 @@
                  </nav>
           </div>
           <div class="inner cover   table-responsive ">
-            <div>
 
-
-                <h1>Где купить самые дешевые подгузники {{header.brand.name}} {{header.series}} {{header.size}}</h1>
-                <p style="text-align:left"><b>Дешевле всего покупать:</b><br>
+                <h3>Где купить самые дешевые подгузники {{header.brand.name}} {{header.series}} {{header.size}}</h3> <br>
+                <p style="text-align:left">
                 {{best.product.brand.name}} {{ best.product.series }} {{ best.product.size }}
                 ({{ best.product.min_weight|floatformat  }} - {{ best.product.max_weight|floatformat  }} кг) упаковку на
-                {{ best.product.count }} штук в магазине {{ best.seller }}<br>
+                {{ best.product.count }} шт. в магазине {{ best.seller }}<br>
                 Цена за штуку: {{ best.price_unit|floatformat:-2 }} руб<br>
                 Цена за упаковку: {{ best.price_full|floatformat }} руб<br>
-                Выгода до: {{ profit_percent|floatformat:-2 }}% ({{ profit_rub|floatformat:-2 }} руб за штуку)</p>
-                <a target="_blank" href="{{ best.seller.url }}{{ best.url }}">Купить</a>
+                Выгода: до {{ profit_percent|floatformat:-2 }}% ({{ profit_rub|floatformat:-2 }} руб за штуку)<br>
+                <a class="btn btn-default" target="_blank" href="{{ best.seller.url }}{{ best.url }}">Купить</a></p>
                 </br>
                  </br>
 
@@ -86,9 +84,9 @@
                             <th class="hidden-xs hidden-sm">Серия</th>
                             <th class="hidden-xs hidden-sm">Размер</th>
                             <th class="hidden-xs hidden-sm">Вес</th>
-                            <th class="hidden-xs hidden-sm">В упаковке (шт)</th>
-                            <th class="hidden-xs hidden-sm">За упаковку (руб)</th>
-                            <th class="hidden-xs hidden-sm">За штуку (руб)</th>
+                            <th class="hidden-xs hidden-sm">Упаковка</th>
+                            <th class="hidden-xs hidden-sm">За упаковку</th>
+                            <th class="hidden-xs hidden-sm">За штуку</th>
                             <th class="hidden-xs hidden-sm">Продавец</th>
                         </tr>
                     </thead>
@@ -100,9 +98,9 @@
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.series }}</td>
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.size }}</td>
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.min_weight|floatformat  }} - {{ stock_item.product.max_weight|floatformat  }} кг</td>
-                            <td>{{ stock_item.product.count }}</td>
-                            <td>{{ stock_item.price_full|floatformat }}</td>
-                            <td>{{ stock_item.price_unit|floatformat:-2 }}</td>
+                            <td>{{ stock_item.product.count }} шт.</td>
+                            <td>{{ stock_item.price_full|floatformat }} руб.</td>
+                            <td>{{ stock_item.price_unit|floatformat:-2 }} руб.</td>
                             <td><a href="{{ stock_item.seller.url }}{{ stock_item.url }}">{{ stock_item.seller }}</a></td>
                         </tr>
                     {% endfor %}
