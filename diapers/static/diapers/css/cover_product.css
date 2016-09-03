@@ -217,7 +217,7 @@ table {
     border-radius: 10px;
     opacity: 0.8;
     border: 1px solid white;
-    border-collapse: separate;
+    border-collapse: collapse;
     line-height: 30px;
 
 }
