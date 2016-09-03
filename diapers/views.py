@@ -376,7 +376,6 @@ def products(request, brand='NoBrand', series='NoSeries', size='NoSize'):
         profit_rub = ''
         profit_percent = ''
 
-
     return render(request, 'diapers/products.html', {'header': header, 'stock_list': stock_list, 'best': best,
                                                      'profit_rub': profit_rub, 'profit_percent': profit_percent})
 
