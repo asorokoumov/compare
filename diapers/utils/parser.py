@@ -8,9 +8,12 @@ import logging
 
 
 from configobj import ConfigObj
+import os.path
 
-shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
-shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
+BASE = os.path.dirname(os.path.abspath(__file__))
+
+shop_xpath = ConfigObj(os.path.join(BASE, 'data_config/shop_xpath.ini'))
+shop_urls = ConfigObj(os.path.join(BASE, 'data_config/shop_urls.ini'))
 
 
 __author__ = 'anton.sorokoumov'
@@ -23,6 +26,7 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
     logger.debug('Parcing ' + seller.name + '. Category: ' + category_url + '. Brand: ' + brand.name)
     next_url = [category_url]
     items_added = 0
+    items_checked = 0
     while next_url:
         if next_url and type(next_url) == list:
             next_url = next_url[0]
@@ -45,10 +49,14 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
                     ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],
                                    status="new").save()
                     items_added += 1
+                    items_checked += 1
+                else:
+                    items_checked += 1
         except requests.exceptions.ConnectionError:
             logger.debug('ConnectionError ' + next_url)
             next_url = []
-    logger.debug('Parced: ' + str(items_added))
+    logger.debug('Parsed: ' + str(items_checked))
+    logger.debug('Added: ' + str(items_added))
     return items_added
 
 
