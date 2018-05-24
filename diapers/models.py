@@ -1,9 +1,12 @@
 # coding=utf-8
 from django.db import models
 from configobj import ConfigObj
+import os.path
 
-basic = ConfigObj('compare/diapers/utils/data_config/basic.ini')
-brands = ConfigObj('compare/diapers/utils/data_config/brands.ini')
+BASE = os.path.dirname(os.path.abspath(__file__))
+
+basic = ConfigObj(os.path.join(BASE, 'utils/data_config/basic.ini'))
+brands = ConfigObj(os.path.join(BASE, 'utils/data_config/brands.ini'))
 
 
 class Brand (models.Model):
@@ -42,6 +45,11 @@ class Seller (models.Model):
 
     def __str__(self):
         return self.name
+
+    @staticmethod
+    def set_default_data():
+        for base_gender in basic['Seller']:
+            Seller.objects.update_or_create(gender=base_gender)
 
 
 class Type (models.Model):

@@ -43,7 +43,7 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
                 item_title = item.xpath(shop_xpath[seller.name]['item_title_xpath'])
                 item_url = item.xpath(shop_xpath[seller.name]['item_url_xpath'])
                 item_url[0] = crutch.item_url(item_url[0], seller)
-                if not (any(ProductPreview.objects.filter(url=item_url[0])) & check_stock):
+                if not (ProductPreview.objects.filter(url=item_url[0]) or Stock.objects.filter(url=item_url[0])):
                     description = u''.join(item_title)
                     description = crutch.description(description, seller)
                     ProductPreview(description=description, seller=seller, brand=brand, url=item_url[0],

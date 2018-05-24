@@ -13,13 +13,16 @@ from django.core.urlresolvers import reverse
 from configobj import ConfigObj
 from django.http import HttpResponse
 import simplejson
+import os.path
 
 
 logger = logging.getLogger('compare')
 
-shop_xpath = ConfigObj('compare/diapers/utils/data_config/shop_xpath.ini')
-shop_urls = ConfigObj('compare/diapers/utils/data_config/shop_urls.ini')
-brand_list = ConfigObj('compare/diapers/utils/data_config/brands.ini')
+BASE = os.path.dirname(os.path.abspath(__file__))
+
+shop_xpath = ConfigObj(os.path.join(BASE, 'utils/data_config/shop_xpath.ini'))
+shop_urls = ConfigObj(os.path.join(BASE, 'utils/data_config/shop_urls.ini'))
+brand_list = ConfigObj(os.path.join(BASE, 'utils/data_config/brands.ini'))
 
 
 def index(request):
@@ -197,8 +200,7 @@ def manual_parse_result(request):
 
 
 def manual_parse(request):
-    chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip'),
-                                                    brand=Brand.objects.get(name='Pampers')).order_by('?')
+    chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
     chosen_product = chosen_products.first()
 
     return render(request, 'diapers/parse/manual_parse.html',
@@ -235,29 +237,30 @@ def update_brand_list(request):
     items_added = {}
     for brand in brand_list:
         items_added[brand] = Brand.objects.update_or_create(name=str(brand))
+    Series.set_default_data()
     return render(request, 'diapers/parse/update_brand_list.html', {'items_added': items_added})
 
 
 def recreate(request):
     # Delete products, previews and history from everywhere
-    #  PreviewParseHistory.objects.all().delete()
-    #  ProductPreview.objects.all().delete()
-    #  Product.objects.all().delete()
+    PreviewParseHistory.objects.all().delete()
+    ProductPreview.objects.all().delete()
+    # Product.objects.all().delete()
     # Seller recreate
     #  Seller.objects.all().delete()
     #  Seller.set_default_data()
     # Gender recreate
     #  Gender.objects.all().delete()
-    #  Gender.set_default_data()
+    # Gender.set_default_data()
     # Brand recreate
     #  Brand.objects.all().delete()
-    #  Brand.set_default_data()
+    # Brand.set_default_data()
     # Series recreate
     #  Series.objects.all().delete()
-    #  Series.set_default_data()
+    # Series.set_default_data()
     # Type recreate
     #  Type.objects.all().delete()
-    #  Type.set_default_data()
+    # Type.set_default_data()
     # Series recreate
     #  items_added_korablik = parser.parse_shop_catalog('Korablik', False)
     #  items_added_detmir = parser.parse_shop_catalog('Detmir', False)
