@@ -211,6 +211,7 @@ def manual_parse(request):
                    'suggest_brand': suggester.suggest_brand(chosen_product),
                    'suggest_series': suggester.suggest_series(chosen_product),
                    'suggest_size': suggester.suggest_size(chosen_product),
+                   'suggest_type': suggester.suggest_type(chosen_product),
                    'suggest_gender': suggester.suggest_gender(chosen_product),
                    'suggest_min_weight': suggester.suggest_min_weight(chosen_product),
                    'suggest_max_weight': suggester.suggest_max_weight(chosen_product),

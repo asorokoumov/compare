@@ -1,6 +1,6 @@
 # coding=utf-8
 from diapers.utils import common
-from diapers.models import Series, Seller, Gender
+from diapers.models import Series, Seller, Gender, Type
 from configobj import ConfigObj
 import os.path
 
@@ -28,25 +28,24 @@ def suggest_series(product):
             return "-1"
     elif product.seller == Seller.objects.get(name="Detmir"):
         # получить список всех серий
+        # найти первое совпадение серии у этого бренда
+        # иначе предложить первую попавшуюся серию этого бренда
+
         all_series = []
         for series in brand_list[product.brand.name]:
             all_series.append(series)
-        # найти первое совпадение серии у этого бренда
-        # иначе предложить первую попавшуюся серию этого бренда
         suggested_series = '-1'
         for series in all_series:
             result = product.description.find(str(series))
             if result != -1:
                 suggested_series = series
-                print suggested_series
 
         if suggested_series == '-1':
             series_out = Series.objects.filter(brand=product.brand).first()
             suggested_series = all_series[0]
-            print all_series
         else:
             series_out = Series.objects.filter(brand=product.brand, name=suggested_series).first()
-            
+
         try:
             return series_out.id
         except AttributeError:
@@ -56,6 +55,16 @@ def suggest_series(product):
 
 
 def suggest_type(product):
+    pants_words = ['Трусики', 'трусики', 'Pants', 'pants']
+    for word in pants_words:
+        if product.description.find(word) != -1:
+            result_type = Type.objects.filter(type='pants').first()
+            return result_type.id
+    swim_words = ['Плавания', 'плавания', 'Swim', 'swim']
+    for word in swim_words:
+        if product.description.find(word) != -1:
+            result_type = Type.objects.filter(type='swim').first()
+            return result_type.id
     return "1"
 
 
@@ -68,6 +77,8 @@ def suggest_size(product):
         size = product.description.split(" (")
         size = size[0].split(" ")
         return size[-1]
+    elif product.seller == Seller.objects.get(name="Detmir"):
+        return ""
     else:
         return ""
 
