@@ -65,11 +65,25 @@ def suggest_type(product):
         if product.description.find(word) != -1:
             result_type = Type.objects.filter(type='swim').first()
             return result_type.id
-    return "1"
+
+    result_type = Type.objects.filter(type='diapers').first()
+    return result_type.id
 
 
 def suggest_gender(product):
-    return Gender.objects.get(gender='unisex').id
+    boys_words = ['Мальчиков', 'мальчиков', 'Boy', 'boy']
+    for word in boys_words:
+        if product.description.find(word) != -1:
+            result_gender = Gender.objects.filter(gender='male').first()
+            return result_gender.id
+    girls_words = ['Девочек', 'девочек', 'Girl', 'girl']
+    for word in girls_words:
+        if product.description.find(word) != -1:
+            result_gender = Gender.objects.filter(gender='female').first()
+            return result_gender.id
+
+    result_gender = Gender.objects.filter(gender='unisex').first()
+    return result_gender.id
 
 
 def suggest_size(product):
