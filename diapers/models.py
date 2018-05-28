@@ -86,6 +86,10 @@ class Product (models.Model):
     max_weight = models.FloatField()
     count = models.IntegerField()
 
+    def __str__(self):
+        return "%s %s %s (%s - %s кг) %s шт" % \
+               (self.brand, self.series, self.size, self.min_weight, self.max_weight, self.count)
+
 
 class ProductPreview (models.Model):
     description = models.TextField()
@@ -94,6 +98,10 @@ class ProductPreview (models.Model):
     series = models.ForeignKey(Series, default=None, blank=True, null=True)
     url = models.TextField()
     status = models.CharField(max_length=200)
+
+    def __str__(self):
+        return "%s %s %s - %s " % \
+               (self.seller, self.brand, self.series, self.status)
 
 
 class PreviewParseHistory (models.Model):
