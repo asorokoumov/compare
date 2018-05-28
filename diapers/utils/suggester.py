@@ -131,5 +131,11 @@ def suggest_count(product):
         count = count.replace(".", "")
         count = count.replace(" ", "")
         return count
-    else:
-        return ""
+    elif product.seller == Seller.objects.get(name="Detmir"):
+        split_by_count = product.description.split(u'шт')
+        split_by_space = split_by_count[0].split()
+        result = split_by_space[-1:]
+        if result:
+            return result[0]
+        else:
+            return ''
