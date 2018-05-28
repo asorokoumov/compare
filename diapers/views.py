@@ -173,29 +173,34 @@ def parse_items(seller):
 
 
 def manual_parse_result(request):
-    new_product, created = Product.objects.get_or_create(
-        size=request.POST['size'],
-        min_weight=request.POST['min_weight'],
-        max_weight=request.POST['max_weight'],
-        count=request.POST['count'],
-        gender_id=request.POST['gender'],
-        brand_id=request.POST['brand'],
-        series_id=request.POST.get('series', None),
-        type_id=request.POST['type'])
-    new_product.save()
-    product_preview = ProductPreview.objects.filter(pk=request.POST['chosen_product_id']).first()
-    product_preview.status = "done"
-    product_preview.save()
+    if 'submit' in request.POST:
+        new_product, created = Product.objects.get_or_create(
+            size=request.POST['size'],
+            min_weight=request.POST['min_weight'],
+            max_weight=request.POST['max_weight'],
+            count=request.POST['count'],
+            gender_id=request.POST['gender'],
+            brand_id=request.POST['brand'],
+            series_id=request.POST.get('series', None),
+            type_id=request.POST['type'])
+        new_product.save()
+        product_preview = ProductPreview.objects.filter(pk=request.POST['chosen_product_id']).first()
+        product_preview.status = "done"
+        product_preview.save()
 
-    preview_parse_history = PreviewParseHistory(product=new_product, preview=product_preview)
-    preview_parse_history.save()
+        preview_parse_history = PreviewParseHistory(product=new_product, preview=product_preview)
+        preview_parse_history.save()
 
-    new_stock, created = Stock.objects.get_or_create(seller=product_preview.seller, product=new_product,
-                                                     url=product_preview.url,
-                                                     defaults={'price_unit': -1, 'price_full': -1, 'in_stock': True,
-                                                               'is_visible': True})
+        new_stock, created = Stock.objects.get_or_create(seller=product_preview.seller, product=new_product,
+                                                         url=product_preview.url,
+                                                         defaults={'price_unit': -1, 'price_full': -1, 'in_stock': True,
+                                                                   'is_visible': True})
 
-    new_stock.save()
+        new_stock.save()
+    elif 'skip' in request.POST:
+        product_preview = ProductPreview.objects.filter(pk=request.POST['chosen_product_id']).first()
+        product_preview.status = "skip"
+        product_preview.save()
     return HttpResponsePermanentRedirect(reverse('diapers:manual'))
 
 
