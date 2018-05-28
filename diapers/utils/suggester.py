@@ -1,6 +1,12 @@
 # coding=utf-8
 from diapers.utils import common
 from diapers.models import Series, Seller, Gender
+from configobj import ConfigObj
+import os.path
+
+BASE = os.path.dirname(os.path.abspath(__file__))
+
+brand_list = ConfigObj(os.path.join(BASE, 'data_config/brands.ini'))
 
 
 def suggest_brand(product):
@@ -21,15 +27,30 @@ def suggest_series(product):
         except AttributeError:
             return "-1"
     elif product.seller == Seller.objects.get(name="Detmir"):
-        description = product.description.split(" (")
-        description = description[0].split(product.brand.name + " ")
-        description = description[1].replace("Baby-Dry", "Baby")
-        description = description.replace("Sleep&Play", "Sleep & Play")
-        series = description.rsplit(' ', 1)[0]
-        series = Series.objects.filter(name=series).first()
+        # получить список всех серий
+        all_series = []
+        for series in brand_list[product.brand.name]:
+            all_series.append(series)
+        # найти первое совпадение серии у этого бренда
+        # иначе предложить первую попавшуюся серию этого бренда
+        suggested_series = '-1'
+        for series in all_series:
+            result = product.description.find(str(series))
+            if result != -1:
+                suggested_series = series
+                print suggested_series
+
+        if suggested_series == '-1':
+            series_out = Series.objects.filter(brand=product.brand).first()
+            suggested_series = all_series[0]
+            print all_series
+        else:
+            series_out = Series.objects.filter(brand=product.brand, name=suggested_series).first()
+            
         try:
-            return series.id
+            return series_out.id
         except AttributeError:
+            print 'AttributeError - ' + str(suggested_series)
             return "-1"
     return "-1"
 
