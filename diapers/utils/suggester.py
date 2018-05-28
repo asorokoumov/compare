@@ -106,8 +106,18 @@ def suggest_min_weight(product):
         weight = weight[0].replace("+", "")
         weight = weight.replace(",", ".")
         return weight
-    else:
-        return ""
+    elif product.seller == Seller.objects.get(name="Detmir"):
+        if product.description.find('кг') != -1:
+            split_by_weight = product.description.split(u'кг')
+            split_by_space = (split_by_weight[0]).strip().split()
+            split_by_space_last = split_by_space[-1:]
+            split_by_space_last = split_by_space_last[0].replace("(", "")
+            split_by_dash = split_by_space_last.split('-')
+            if split_by_dash:
+                return split_by_dash[-2:][0]
+            else:
+                return ''
+    return ""
 
 
 def suggest_max_weight(product):
@@ -121,8 +131,18 @@ def suggest_max_weight(product):
             return weight
         except IndexError:
             return "-1"
-    else:
-        return ""
+    elif product.seller == Seller.objects.get(name="Detmir"):
+        if product.description.find('кг') != -1:
+            split_by_weight = product.description.split(u'кг')
+            split_by_space = (split_by_weight[0]).strip().split()
+            split_by_space_last = split_by_space[-1:]
+            split_by_space_last = split_by_space_last[0].replace("(", "")
+            split_by_dash = split_by_space_last.split('-')
+            if split_by_dash:
+                return split_by_dash[-1:][0]
+            else:
+                return ''
+    return ""
 
 
 def suggest_count(product):
@@ -132,10 +152,12 @@ def suggest_count(product):
         count = count.replace(" ", "")
         return count
     elif product.seller == Seller.objects.get(name="Detmir"):
-        split_by_count = product.description.split(u'шт')
-        split_by_space = split_by_count[0].split()
-        result = split_by_space[-1:]
-        if result:
-            return result[0]
-        else:
-            return ''
+        if product.description.find('шт') != -1:
+            split_by_count = product.description.split(u'шт')
+            split_by_space = split_by_count[0].split()
+            result = split_by_space[-1:]
+            if result:
+                return result[0]
+            else:
+                return ''
+    return ''
