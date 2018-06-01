@@ -77,8 +77,8 @@ def get_prices_and_availability():
             # TODO add checking availability
 #            stock_object.in_stock = is_in_stock(tree=tree, stock_object=stock_object)
             get_item_prices(tree=tree, stock_object=stock_object)
-        except (requests.exceptions.ReadTimeout, IndexError):
-            logger.debug('ReadTimeout during prices update for stock_object ' + str(stock_object.id) + ' '
+        except (requests.exceptions.ReadTimeout, IndexError, requests.exceptions.ConnectionError):
+            logger.debug('Error during prices update for stock_object ' + str(stock_object.id) + ' '
                          + str(stock_object.url))
             stock_object.is_visible = False
 
