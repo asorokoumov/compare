@@ -209,7 +209,10 @@ def manual_parse_result(request):
 
 
 def manual_parse(request):
-    chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
+    prefiltered_products = ProductPreview.objects.filter(description__icontains='')
+
+    chosen_products = prefiltered_products.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
+   # chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
     chosen_product = chosen_products.first()
 
     return render(request, 'diapers/parse/manual_parse.html',

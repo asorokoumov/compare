@@ -33,6 +33,7 @@ def suggest_series(product):
         description = product.description
         description = description.replace("Sleep&Play", "Sleep & Play")
         description = description.replace("Up&Go", "Up & Go")
+        description = description.replace("Everyday", "Every Day")
 
         all_series = []
         for series in brand_list[product.brand.name]:
@@ -58,28 +59,29 @@ def suggest_series(product):
 
 
 def suggest_type(product):
-    pants_words = ['Трусики', 'трусики', 'Pants', 'pants']
-    for word in pants_words:
-        if product.description.find(word) != -1:
-            result_type = Type.objects.filter(type='pants').first()
-            return result_type.id
+
     swim_words = ['Плавания', 'плавания', 'Swim', 'swim']
     for word in swim_words:
         if product.description.find(word) != -1:
             result_type = Type.objects.filter(type='swim').first()
             return result_type.id
-
+    pants_words = ['Трусики', 'трусики', 'Pants', 'pants']
+    for word in pants_words:
+        if product.description.find(word) != -1:
+            result_type = Type.objects.filter(type='pants').first()
+            return result_type.id
+        
     result_type = Type.objects.filter(type='diapers').first()
     return result_type.id
 
 
 def suggest_gender(product):
-    boys_words = ['Мальчиков', 'мальчиков', 'Boy', 'boy']
+    boys_words = ['Мальчик', 'мальчик', 'Boy', 'boy']
     for word in boys_words:
         if product.description.find(word) != -1:
             result_gender = Gender.objects.filter(gender='male').first()
             return result_gender.id
-    girls_words = ['Девочек', 'девочек', 'Girl', 'girl']
+    girls_words = ['Девочек', 'девочек', 'Girl', 'girl', 'девочки']
     for word in girls_words:
         if product.description.find(word) != -1:
             result_gender = Gender.objects.filter(gender='female').first()
