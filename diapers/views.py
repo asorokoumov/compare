@@ -5,7 +5,8 @@ from lxml import html
 import requests
 import re
 import logging
-from diapers.models import Brand, Series, Product, Stock, Seller, Gender, Type, ProductPreview, PreviewParseHistory
+from diapers.models import Brand, Series, Product, Stock, Seller, Gender, Type, ProductPreview, PreviewParseHistory, \
+    Skip
 from django.db.models import Q
 from diapers.utils import parser, suggester
 from django.http import HttpResponsePermanentRedirect
@@ -201,6 +202,9 @@ def manual_parse_result(request):
         product_preview = ProductPreview.objects.filter(pk=request.POST['chosen_product_id']).first()
         product_preview.status = "skip"
         product_preview.save()
+        skip = Skip(seller=product_preview.seller, url=product_preview.url)
+        skip.save()
+
     return HttpResponsePermanentRedirect(reverse('diapers:manual'))
 
 

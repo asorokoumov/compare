@@ -120,3 +120,9 @@ class Stock (models.Model):
     in_stock = models.BooleanField(default=True)
     is_visible = models.BooleanField(default=True)  # = False if we have any errors during price parcing
 
+
+class Skip (models.Model):
+    seller = models.ForeignKey(Seller)
+    url = models.TextField()
+
+

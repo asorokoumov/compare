@@ -6,7 +6,7 @@ import os.path
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 
-brand_list = ConfigObj(os.path.join(BASE, 'data_config/brands.ini'))
+brand_list = ConfigObj(os.path.join(BASE, 'data_config/brands.ini'), encoding="UTF8")
 
 
 def suggest_brand(product):
@@ -26,17 +26,20 @@ def suggest_series(product):
             return series.id
         except AttributeError:
             return "-1"
-    elif product.seller == Seller.objects.get(name="Detmir"):
+    else:
         # получить список всех серий
         # найти первое совпадение серии у этого бренда
         # иначе предложить первую попавшуюся серию этого бренда
+        description = product.description
+        description = description.replace("Sleep&Play", "Sleep & Play")
+        description = description.replace("Up&Go", "Up & Go")
 
         all_series = []
         for series in brand_list[product.brand.name]:
             all_series.append(series)
         suggested_series = '-1'
         for series in all_series:
-            result = product.description.find(str(series))
+            result = description.find(str(series))
             if result != -1:
                 suggested_series = series
 
@@ -87,7 +90,8 @@ def suggest_gender(product):
 
 
 def suggest_size(product):
-    if product.seller == Seller.objects.get(name="Korablik"):
+    if product.seller == Seller.objects.get(name="Korablik") or \
+                    product.seller == Seller.objects.get(name="Akusherstvo"):
         size = product.description.split(" (")
         size = size[0].split(" ")
         return size[-1]
@@ -98,7 +102,8 @@ def suggest_size(product):
 
 
 def suggest_min_weight(product):
-    if product.seller == Seller.objects.get(name="Korablik"):
+    if product.seller == Seller.objects.get(name="Korablik") or \
+                    product.seller == Seller.objects.get(name="Akusherstvo"):
         weight = common.find_between(product.description, "(", ")")
         weight = weight.replace(u'кг', "")
         weight = weight.replace(" ", "")
@@ -121,7 +126,8 @@ def suggest_min_weight(product):
 
 
 def suggest_max_weight(product):
-    if product.seller == Seller.objects.get(name="Korablik"):
+    if product.seller == Seller.objects.get(name="Korablik") or \
+                    product.seller == Seller.objects.get(name="Akusherstvo"):
         weight = common.find_between(product.description, "(", ")")
         weight = weight.replace(u'кг', "")
         weight = weight.replace(" ", "")
@@ -151,7 +157,8 @@ def suggest_count(product):
         count = count.replace(".", "")
         count = count.replace(" ", "")
         return count
-    elif product.seller == Seller.objects.get(name="Detmir"):
+    elif product.seller == Seller.objects.get(name="Detmir") or \
+            product.seller == Seller.objects.get(name="Akusherstvo"):
         if product.description.find('шт') != -1:
             split_by_count = product.description.split(u'шт')
             split_by_space = split_by_count[0].split()
