@@ -31,12 +31,14 @@ def index(request):
     for brand in brands:
         if not len(Stock.objects.filter(product=Product.objects.filter(brand=brand))):
             brands = brands.filter(~Q(pk=brand.id))
-    series = Series.objects.filter(~Q(name='Unknown_series'), ~Q(name='No series')).order_by('name')
-    sizes_products = Product.objects.values('size').distinct().order_by('size')
+    brands = brands.order_by('name')
+ #   series = Series.objects.filter(~Q(name='Без серии')).order_by('name')
+ #   sizes_products = Product.objects.values('size').distinct().order_by('size')
     sizes = []
-    for size in sizes_products:
-        sizes.append(size['size'])
-    sizes.sort()
+    series= []
+ #   for size in sizes_products:
+ #       sizes.append(size['size'])
+ #   sizes.sort()
     return render(request, 'diapers/index.html', {'brands': brands, 'series': series, 'sizes': sizes})
 
 
@@ -289,9 +291,9 @@ def recreate(request):
 def get_series(request, brand_id):
     if brand_id != '-1':
         brand = Brand.objects.get(pk=brand_id)
-        series = Series.objects.filter(~Q(name='No series'), brand=brand)
+        series = Series.objects.filter(~Q(name='No series'), ~Q(name='Без серии'), brand=brand)
     else:
-        series = Series.objects.filter(~Q(name='Unknown_series'), ~Q(name='No series')).order_by('name')
+        series = Series.objects.filter(~Q(name='Unknown_series'), ~Q(name='No series'), ~Q(name='Без серии')).order_by('name')
     series_dict = {}
     for series_item in series:
         series_dict[series_item.id] = series_item.name
@@ -337,16 +339,16 @@ def search(request):
     try:
         brand_id = request.POST.get('brand', False)
         brand = Brand.objects.get(pk=brand_id)
-        kwargs['brand'] = brand.name
+        kwargs['brand'] = brand.url_name
     except Brand.DoesNotExist:
-        brand_id = 'NoBrand'
+        kwargs['brand'] = 'NoBrand'
 
     try:
         series_id = request.POST.get('series', False)
         series = Series.objects.get(pk=series_id)
-        kwargs['series'] = series.name
+        kwargs['series'] = series.url_name
     except Series.DoesNotExist:
-        series_id = 'NoSeries'
+        kwargs['series'] = 'NoSeries'
 
     size = request.POST.get('size', '-1')
     if not size == '-1':
@@ -360,19 +362,19 @@ def products(request, brand='NoBrand', series='NoSeries', size='NoSize'):
     # header
     header = {}
     if not brand == 'NoBrand':
-        header['brand'] = Brand.objects.get(name=brand)
+        header['brand'] = Brand.objects.get(url_name=brand)
     if not series == 'NoSeries':
-        header['series'] = Series.objects.get(name=series)
+        header['series'] = Series.objects.get(url_name=series)
     if not size == 'NoSize':
         header['size'] = size
 
     # search products
     product_list = Product.objects.all()
     if not brand == 'NoBrand':
-        brand_id = Brand.objects.get(name=brand)
+        brand_id = Brand.objects.get(url_name=brand)
         product_list = product_list.filter(brand=brand_id)
     if not series == 'NoSeries':
-        series_id = Series.objects.get(name=series)
+        series_id = Series.objects.get(url_name=series)
         product_list = product_list.filter(series=series_id)
     if not size == 'NoSize':
         product_list = product_list.filter(size=size)

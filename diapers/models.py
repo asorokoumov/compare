@@ -11,8 +11,8 @@ brands = ConfigObj(os.path.join(BASE, 'utils/data_config/brands.ini'))
 
 class Brand (models.Model):
     name = models.CharField(max_length=200)
+    url_name = models.CharField(max_length=200)
     description = models.TextField(default=None, blank=True, null=True)
-    image = models.TextField(max_length=200)
 
     def __str__(self):
         return self.name
@@ -25,7 +25,8 @@ class Brand (models.Model):
 
 class Series (models.Model):
     name = models.CharField(max_length=200)
-    description = models.TextField()
+    url_name = models.CharField(max_length=200)
+    description = models.TextField(default=None, blank=True, null=True)
     brand = models.ForeignKey(Brand)
 
     def __str__(self):

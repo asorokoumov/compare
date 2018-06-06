@@ -59,9 +59,9 @@
           </div>
           <div class="inner cover   table-responsive ">
 
-                <h3>Где купить самые дешевые подгузники {{header.brand.name}} {{header.series}} {{header.size}}</h3> <br>
+                <h3>Где купить самые дешевые подгузники {{header.brand.name}} {{header.series.name}} {{header.size}}</h3> <br>
                 <p style="text-align:left">
-                {{best.product.brand.name}} {{ best.product.series }} {{ best.product.size }}
+                {{best.product.brand.name}} {{ best.product.series.name }} {{ best.product.size }}
                 ({{ best.product.min_weight|floatformat  }} - {{ best.product.max_weight|floatformat  }} кг) упаковку на
                 {{ best.product.count }} шт. в магазине {{ best.seller }}<br>
                 Цена за штуку: {{ best.price_unit|floatformat:-2 }} руб<br>
@@ -95,7 +95,7 @@
                             <td class="hidden-md hidden-lg">{{ stock_item.product.brand.name }} {{ stock_item.product.series }} {{ stock_item.product.size }}</td>
 
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.brand.name }}</td>
-                            <td class="hidden-xs hidden-sm">{{ stock_item.product.series }}</td>
+                            <td class="hidden-xs hidden-sm">{{ stock_item.product.series.name }}</td>
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.size }}</td>
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.min_weight|floatformat  }} - {{ stock_item.product.max_weight|floatformat  }} кг</td>
                             <td>{{ stock_item.product.count }} шт.</td>
