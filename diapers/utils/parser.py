@@ -51,12 +51,12 @@ def parse_catalog(seller, category_url, brand, check_stock=True):
                     items_added += 1
                     items_checked += 1
                 else:
-                    if ProductPreview.objects.filter(url=item_url[0]):
-                        logger.debug('ProductPreview has that url: ' + str(item_url[0]))
+                    if Skip.objects.filter(url=item_url[0]):
+                        logger.debug('Skip has that url: ' + str(item_url[0]))
                     elif Stock.objects.filter(url=item_url[0]):
                         logger.debug('Stock has that url: ' + str(item_url[0]))
-                    elif Skip.objects.filter(url=item_url[0]):
-                        logger.debug('Skip has that url: ' + str(item_url[0]))
+                    elif ProductPreview.objects.filter(url=item_url[0]):
+                        logger.debug('ProductPreview has that url: ' + str(item_url[0]))
                     items_checked += 1
         except requests.exceptions.ConnectionError:
             logger.debug('ConnectionError ' + next_url)

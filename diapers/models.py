@@ -29,7 +29,7 @@ class Series (models.Model):
     brand = models.ForeignKey(Brand)
 
     def __str__(self):
-        return self.name
+        return "%s - %s" % (self.brand, self.name)
 
     @staticmethod
     def set_default_data():

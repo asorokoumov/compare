@@ -34,6 +34,7 @@ def suggest_series(product):
         description = description.replace("Sleep&Play", "Sleep & Play")
         description = description.replace("Up&Go", "Up & Go")
         description = description.replace("Everyday", "Every Day")
+        description = description.replace("EveryDay", "Every Day")
 
         all_series = []
         for series in brand_list[product.brand.name]:
@@ -70,7 +71,7 @@ def suggest_type(product):
         if product.description.find(word) != -1:
             result_type = Type.objects.filter(type='pants').first()
             return result_type.id
-        
+
     result_type = Type.objects.filter(type='diapers').first()
     return result_type.id
 
