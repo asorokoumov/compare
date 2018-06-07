@@ -1,4 +1,9 @@
+
+
   $(document).ready(function(){
+    window.onload = function () {
+        document.getElementById("search_form").reset();
+    }
     $('select#brand').change(function(){
         brand_id = $(this).val();
         brand_name = $(this).text();
@@ -11,7 +16,6 @@
 
                 $.each(data, function(key, value){
                     $('select#series').append($("<option></option>").text(value).val(key));
-
                 });
             }
         })
