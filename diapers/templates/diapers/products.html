@@ -124,7 +124,7 @@
                             <td>{{ stock_item.product.count }} шт.</td>
                             <td>{{ stock_item.price_full|floatformat }} руб.</td>
                             <td>{{ stock_item.price_unit|floatformat:-2 }} руб.</td>
-                            <td><a href="{{ stock_item.seller.url }}{{ stock_item.url }}">{{ stock_item.seller }}</a></td>
+                            <td><a href="{{ stock_item.seller.url }}{{ stock_item.url }}"><u>{{ stock_item.seller.name_rus }}</u></a></td>
                         </tr>
                     {% endfor %}
                 </table>

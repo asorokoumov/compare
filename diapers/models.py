@@ -41,6 +41,7 @@ class Series (models.Model):
 
 class Seller (models.Model):
     name = models.CharField(max_length=200)
+    name_rus = models.CharField(max_length=200)
     description = models.TextField(default=None, blank=True, null=True)
     url = models.CharField(max_length=200)
 
