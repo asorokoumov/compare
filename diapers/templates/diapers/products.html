@@ -98,7 +98,12 @@
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.brand.name }}</td>
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.series.name }}</td>
                             <td class="hidden-xs hidden-sm">{{ stock_item.product.size }}</td>
-                            <td class="hidden-xs hidden-sm">{{ stock_item.product.min_weight|floatformat  }} - {{ stock_item.product.max_weight|floatformat  }} кг</td>
+                            <td class="hidden-xs hidden-sm">
+                                {{ stock_item.product.min_weight|floatformat  }}{% if stock_item.product.max_weight != -1 %}
+                                    - {{ stock_item.product.max_weight|floatformat  }} кг
+                                {% else %}+ кг
+                                {% endif %}
+                            </td>
                             <td>{{ stock_item.product.type }} {{ stock_item.product.gender }}</td>
                             <td>{{ stock_item.product.count }} шт.</td>
                             <td>{{ stock_item.price_full|floatformat }} руб.</td>
