@@ -55,6 +55,7 @@ class Seller (models.Model):
 
 class Type (models.Model):
     type = models.CharField(max_length=200)
+    type_rus = models.CharField(max_length=200)
 
     def __str__(self):
         return self.type
@@ -67,6 +68,7 @@ class Type (models.Model):
 
 class Gender (models.Model):
     gender = models.CharField(max_length=200)
+    gender_rus = models.CharField(max_length=200)
 
     def __str__(self):
         return self.gender

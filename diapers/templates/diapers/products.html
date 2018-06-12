@@ -104,7 +104,11 @@
                                 {% else %}+ кг
                                 {% endif %}
                             </td>
-                            <td>{{ stock_item.product.type }} {{ stock_item.product.gender }}</td>
+                            <td>{{ stock_item.product.type.type_rus }}
+                                {% ifnotequal stock_item.product.gender|stringformat:"s" "unisex"%}
+                                    {{ stock_item.product.gender.gender_rus }}
+                                {% endifnotequal %}
+                                </td>
                             <td>{{ stock_item.product.count }} шт.</td>
                             <td>{{ stock_item.price_full|floatformat }} руб.</td>
                             <td>{{ stock_item.price_unit|floatformat:-2 }} руб.</td>
