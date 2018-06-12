@@ -27,3 +27,7 @@ urlpatterns = [
 urlpatterns += patterns('',
                             (r'^static/(?P<path>.*)$', 'django.views.static.serve',
                              {'document_root': settings.STATIC_ROOT}),)
+
+
+handler404 = 'diapers.views.error404'
+handler500 = 'diapers.views.error500'

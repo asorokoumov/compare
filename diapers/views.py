@@ -15,6 +15,7 @@ from configobj import ConfigObj
 from django.http import HttpResponse
 import simplejson
 import os.path
+from diapers.utils import crutch
 
 
 logger = logging.getLogger('compare')
@@ -26,20 +27,27 @@ shop_urls = ConfigObj(os.path.join(BASE, 'utils/data_config/shop_urls.ini'))
 brand_list = ConfigObj(os.path.join(BASE, 'utils/data_config/brands.ini'))
 
 
+def error404(request):
+    return render(request, 'technical/404.html', status=404)
+
+
+def error500(request):
+    return render(request, 'technical/500.html', status=500)
+
+
 def index(request):
     brands = Brand.objects.filter(~Q(name='Unknown_brand')).order_by('name')
     for brand in brands:
         if not len(Stock.objects.filter(product=Product.objects.filter(brand=brand))):
             brands = brands.filter(~Q(pk=brand.id))
     brands = brands.order_by('name')
- #   series = Series.objects.filter(~Q(name='Без серии')).order_by('name')
- #   sizes_products = Product.objects.values('size').distinct().order_by('size')
     sizes = []
-    series= []
- #   for size in sizes_products:
- #       sizes.append(size['size'])
- #   sizes.sort()
+    series = []
     return render(request, 'diapers/index.html', {'brands': brands, 'series': series, 'sizes': sizes})
+
+
+def redirect_to_index(request):
+    return HttpResponsePermanentRedirect(reverse('diapers:index'))
 
 
 def status(request):
@@ -352,7 +360,7 @@ def search(request):
 
     size = request.POST.get('size', '-1')
     if not size == '-1':
-        kwargs['size'] = size
+        kwargs['size'] = crutch.decode_url(size)
 
     return HttpResponsePermanentRedirect(reverse('diapers:products', kwargs=kwargs))
 
@@ -366,7 +374,7 @@ def products(request, brand='NoBrand', series='NoSeries', size='NoSize'):
     if not series == 'NoSeries':
         header['series'] = Series.objects.get(url_name=series)
     if not size == 'NoSize':
-        header['size'] = size
+        header['size'] = crutch.encode_url(size)
 
     # search products
     product_list = Product.objects.all()
@@ -377,7 +385,7 @@ def products(request, brand='NoBrand', series='NoSeries', size='NoSize'):
         series_id = Series.objects.get(url_name=series)
         product_list = product_list.filter(series=series_id)
     if not size == 'NoSize':
-        product_list = product_list.filter(size=size)
+        product_list = product_list.filter(size=crutch.encode_url(size))
     stock_list = []
     for product in product_list:
         stock_objects = Stock.objects.filter(product=product)
@@ -396,4 +404,3 @@ def products(request, brand='NoBrand', series='NoSeries', size='NoSize'):
 
     return render(request, 'diapers/products.html', {'header': header, 'stock_list': stock_list, 'best': best,
                                                      'profit_rub': profit_rub, 'profit_percent': profit_percent})
-

@@ -15,3 +15,15 @@ def next_url(url, seller):
         return url[-1:]
     else:
         return url
+
+
+def decode_url(url):
+    url = url.replace('+', 'plus')
+    url = url.replace('/', '--')
+    return url
+
+
+def encode_url(url):
+    url = url.replace('plus', '+')
+    url = url.replace('--', '/')
+    return url

@@ -26,6 +26,8 @@ urlpatterns = [
 
     #  New design
     url(r'^$', views.index, name='index'),
+    url(r'^podguzniki/$', views.redirect_to_index, name='redirect_to_index'),
+
 
     url(r'^get_series/(?P<brand_id>[-\w]+)/', views.get_series, name='get_series'),
     url(r'^get_brands/(?P<brand_id>[-\w]+)/(?P<series_id>[-\w]+)/', views.get_brands, name='get_brand'),
@@ -35,6 +37,6 @@ urlpatterns = [
     url(r'^podguzniki/(?P<brand>[-\w ]+)/(?P<series>[-\w ]+)/(?P<size>[-\w]+)/$', views.products, name='products'),
     url(r'^podguzniki/(?P<brand>[-\w ]+)/(?P<series>[-\w ]+)/$', views.products, name='products'),
     url(r'^podguzniki/(?P<brand>[-\w ]+)/$', views.products, name='products'),
-    url(r'^podguzniki/$', views.products, name='products'),
+
 
 ]
