@@ -16,6 +16,9 @@ class Brand (models.Model):
 
     def __str__(self):
         return self.name
+    
+    def __unicode__(self):
+        return u'%s' % self.name
 
     @staticmethod
     def set_default_data():
@@ -31,6 +34,9 @@ class Series (models.Model):
 
     def __str__(self):
         return "%s - %s" % (self.brand, self.name)
+
+    def __unicode__(self):
+        return u'%s' % self.name
 
     @staticmethod
     def set_default_data():
