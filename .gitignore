@@ -40,7 +40,7 @@ Thumbs.db
 # Other #
 ####################
 .env/
-config/default.conf
+default.conf
 env/
 compare/static/
 .idea/
