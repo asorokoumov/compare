@@ -71,7 +71,7 @@
                 Цена за штуку: {{ best.price_unit|floatformat:-2 }} руб<br>
                 Цена за упаковку: {{ best.price_full|floatformat }} руб<br>
                 Выгода: до {{ profit_percent|floatformat:-2 }}% ({{ profit_rub|floatformat:-2 }} руб за штуку)<br>
-                <a class="btn btn-default" target="_blank" href="{{ best.seller.url }}{{ best.url }}">Купить</a></p>
+                <a class="btn btn-default" onclick="yaCounter39130816.reachGoal('buy_button'); return true;"  target="_blank" href="{{ best.seller.url }}{{ best.url }}">Купить</a></p>
                 </br>
                  </br>
 
@@ -124,7 +124,7 @@
                             <td>{{ stock_item.product.count }} шт.</td>
                             <td>{{ stock_item.price_full|floatformat }} руб.</td>
                             <td>{{ stock_item.price_unit|floatformat:-2 }} руб.</td>
-                            <td><a href="{{ stock_item.seller.url }}{{ stock_item.url }}"><u>{{ stock_item.seller.name_rus }}</u></a></td>
+                            <td><a onclick="yaCounter39130858.reachGoal('move_to_seller'); return true;"   href="{{ stock_item.seller.url }}{{ stock_item.url }}"><u>{{ stock_item.seller.name_rus }}</u></a></td>
                         </tr>
                     {% endfor %}
                 </table>
