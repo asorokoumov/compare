@@ -2,21 +2,14 @@ __author__ = 'asorokoumov'
 from django.conf.urls import url
 
 from . import views
+from views import *
 
 urlpatterns = [
-    url(r'^status/$', views.status, name='status'),
-    url(r'^test/$', views.test, name='test'),
-    url(r'^todo/$', views.todo, name='todo'),
 
     url(r'^admin/$', views.admin, name='admin'),
 
-    # TODO create human understanding urls
-    # url(r'^(?P<brand_id>[0-9]+)/$', views.show_series, name='series'),
-    # url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/$', views.show_sizes, name='sizes'),
-    # url(r'^(?P<brand_id>[0-9]+)/(?P<series_id>[0-9]+)/(?P<size>.+)/$', views.show_products, name='products'),
-
     # admin
-    url(r'^parse/update_product_list/$', views.update_product_list, name='update_product_list'),
+    url(r'^parse/parse_shop_catalog/$', views.parse_shop_catalog, name='parse_shop_catalog'),
     url(r'^parse/update_brand_list/$', views.update_brand_list, name='update_brand_list'),
     url(r'^parse/recreate/$', views.recreate, name='recreate'),
     url(r'^parse/prices/$', views.update_prices_and_availability, name='update_prices_and_availability'),

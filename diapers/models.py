@@ -104,7 +104,7 @@ class Product (models.Model):
 class ProductPreview (models.Model):
     description = models.TextField()
     seller = models.ForeignKey(Seller)
-    brand = models.ForeignKey(Brand)
+    brand = models.ForeignKey(Brand, default=None, blank=True, null=True)
     series = models.ForeignKey(Series, default=None, blank=True, null=True)
     url = models.TextField()
     status = models.CharField(max_length=200)

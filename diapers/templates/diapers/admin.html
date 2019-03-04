@@ -51,22 +51,40 @@
                            <h2><span>Админка</span> <a class="sell-your-item" href=""> <i class="  icon-th-list"></i> </a></h2>
                         </div>
                      </div>
+                     <div class="col-lg-9 f-category" style="height: 100px;">
+                        <a href="{% url 'diapers:update_brand_list' %}">
+                           <h5><span class="company-name">Обновить список брендов</span></h5>
+                        </a>
+                     </div>
+                     <div class="col-lg-4  f-category" style="height: 100px;">
+                        <a href="{% url 'diapers:parse_shop_catalog' %}?seller_name=Korablik">
+                           <h5><span class="company-name">Получить новые продукты из магазина Кораблик</span></h5>
+                        </a>
+                     </div>
+                     <div class="col-lg-4  f-category" style="height: 100px;">
+                        <a href="{% url 'diapers:parse_shop_catalog' %}?seller_name=Ozon">
+                           <h5><span class="company-name">Получить новые продукты из магазина Ozon</span></h5>
+                        </a>
+                     </div>
+                     <div class="col-lg-4  f-category" style="height: 100px;">
+                        <a href="{% url 'diapers:parse_shop_catalog' %}?seller_name=Akusherstvo">
+                           <h5><span class="company-name">Получить новые продукты из магазина Акушерство</span></h5>
+                        </a>
+                     </div>
+
+                     <div class="col-lg-4  f-category" style="height: 100px;">
+                        <a href="{% url 'diapers:parse_shop_catalog' %}?seller_name=Detmir">
+                           <h5><span class="company-name">Получить новые продукты из магазина Детский Мир</span></h5>
+                        </a>
+                     </div>
 
                      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 f-category" style="height: 100px;">
                         <a href="{% url 'diapers:update_prices_and_availability' %}">
                            <h5><span class="company-name">Обновить цены</span></h5>
                         </a>
                      </div>
-                     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 f-category" style="height: 100px;">
-                        <a href="{% url 'diapers:update_product_list' %}">
-                           <h5><span class="company-name">Обновить список продуктов</span></h5>
-                        </a>
-                     </div>
-                     <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 f-category" style="height: 100px;">
-                        <a href="{% url 'diapers:update_brand_list' %}">
-                           <h5><span class="company-name">Обновить список брендов</span></h5>
-                        </a>
-                     </div>
+
+
                      <div class="col-lg-2 col-md-3 col-sm-3 col-xs-4 f-category" style="height: 100px;">
                         <a href="{% url 'diapers:manual' %}">
                            <h5><span class="company-name">Ручная обработка</span></h5>
