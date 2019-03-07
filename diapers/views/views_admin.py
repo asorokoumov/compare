@@ -109,12 +109,12 @@ def manual_parse(request):
     prefiltered_products = ProductPreview.objects.filter(description__icontains='')
 
     chosen_products = prefiltered_products.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
-   # chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
+   #chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
     chosen_product = chosen_products.first()
 
     return render(request, 'diapers/parse/manual_parse.html',
                   {'all_brands': Brand.objects.all(),
-                   'all_series': Series.objects.filter(brand=chosen_product.brand),
+                   'all_series': Series.objects.filter(brand=suggester.suggest_brand(chosen_product)),
                    'all_types': Type.objects.all(),
                    'all_genders': Gender.objects.all(),
                    'suggest_brand': suggester.suggest_brand(chosen_product),
@@ -137,24 +137,24 @@ def update_prices_and_availability(request):
 
 def recreate(request):
     # Delete products, previews and history from everywhere
-    PreviewParseHistory.objects.all().delete()
+   # PreviewParseHistory.objects.all().delete()
     ProductPreview.objects.all().delete()
-    # Product.objects.all().delete()
+    Product.objects.all().delete()
     # Seller recreate
     #  Seller.objects.all().delete()
     #  Seller.set_default_data()
     # Gender recreate
-    #  Gender.objects.all().delete()
-    # Gender.set_default_data()
+    Gender.objects.all().delete()
+    Gender.set_default_data()
     # Brand recreate
     #  Brand.objects.all().delete()
     # Brand.set_default_data()
     # Series recreate
-    #  Series.objects.all().delete()
-    # Series.set_default_data()
+    Series.objects.all().delete()
+    Series.set_default_data()
     # Type recreate
-    #  Type.objects.all().delete()
-    # Type.set_default_data()
+    Type.objects.all().delete()
+    Type.set_default_data()
     # Series recreate
     #  items_added_korablik = parser.parse_shop_catalog('Korablik', False)
     #  items_added_detmir = parser.parse_shop_catalog('Detmir', False)

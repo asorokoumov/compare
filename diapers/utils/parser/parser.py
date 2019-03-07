@@ -27,7 +27,7 @@ def parse_seller(seller):
         parser = Parser(seller=seller, headless=True, is_next_url_full=True, scroll=False)
     else:
         # Detmir
-        parser = Parser(seller=seller, headless=True, is_next_url_full=True, scroll=False)
+        parser = Parser(seller=seller, headless=False, is_next_url_full=True, scroll=False)
 
     category_urls = shop_urls[seller.name]
     if type(category_urls) is str:

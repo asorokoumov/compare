@@ -1,6 +1,6 @@
 # coding=utf-8
 from diapers.utils import common
-from diapers.models import Series, Seller, Gender, Type
+from diapers.models import Series, Seller, Gender, Type, Brand
 from configobj import ConfigObj
 import os.path
 
@@ -10,63 +10,35 @@ brand_list = ConfigObj(os.path.join(BASE, 'data_config/brands.ini'), encoding="U
 
 
 def suggest_brand(product):
-    brand = product.brand.id
+    brand = -1
+    for brand in brand_list:
+        if brand.strip().lower() in product.description.strip().lower():
+            return Brand.objects.get(name=brand).id
     return brand
 
 
 def suggest_series(product):
-    if product.seller == Seller.objects.get(name="Korablik"):
-        description = product.description.split(" (")
-        description = description[0].replace("Sleep&Play", "Sleep & Play")
-        series = common.find_between(description, product.brand.name, suggest_size(product))
-        series = series.strip()
-
-        series = Series.objects.filter(name=series).first()
-        try:
-            return series.id
-        except AttributeError:
-            return "-1"
-    else:
-        # получить список всех серий
-        # найти первое совпадение серии у этого бренда
-        # иначе предложить первую попавшуюся серию этого бренда
-        description = product.description
-        description = description.replace("Sleep&Play", "Sleep & Play")
-        description = description.replace("Up&Go", "Up & Go")
-        description = description.replace("Everyday", "Every Day")
-        description = description.replace("EveryDay", "Every Day")
-
-        all_series = []
-        for series in brand_list[product.brand.name]:
+    all_series = []
+    for brand in brand_list:
+        for series in brand_list[brand]:
             all_series.append(series)
-        suggested_series = '-1'
-        for series in all_series:
-            result = description.find(str(series))
-            if result != -1:
-                suggested_series = series
-
-        if suggested_series == '-1':
-            series_out = Series.objects.filter(brand=product.brand).first()
-            suggested_series = all_series[0]
-        else:
-            series_out = Series.objects.filter(brand=product.brand, name=suggested_series).first()
-
-        try:
-            return series_out.id
-        except AttributeError:
-            print 'AttributeError - ' + str(suggested_series)
-            return "-1"
-    return "-1"
+    for series in all_series:
+        if series.strip().lower() in product.description.strip().lower():
+            print series
+            print '--- ' + str(Series.objects.get(name=series).id)
+            return Series.objects.get(name=series).id
+    series = ''
+    return series
 
 
 def suggest_type(product):
 
-    swim_words = ['Плавания', 'плавания', 'Swim', 'swim']
+    swim_words = [u'Плавания', u'плавания', 'Swim', 'swim']
     for word in swim_words:
         if product.description.find(word) != -1:
             result_type = Type.objects.filter(type='swim').first()
             return result_type.id
-    pants_words = ['Трусики', 'трусики', 'Pants', 'pants']
+    pants_words = [u'Трусики', u'трусики', 'Pants', 'pants']
     for word in pants_words:
         if product.description.find(word) != -1:
             result_type = Type.objects.filter(type='pants').first()
@@ -77,12 +49,12 @@ def suggest_type(product):
 
 
 def suggest_gender(product):
-    boys_words = ['Мальчик', 'мальчик', 'Boy', 'boy']
+    boys_words = [u'Мальчик', u'мальчик', 'Boy', 'boy']
     for word in boys_words:
         if product.description.find(word) != -1:
             result_gender = Gender.objects.filter(gender='male').first()
             return result_gender.id
-    girls_words = ['Девочек', 'девочек', 'Girl', 'girl', 'девочки']
+    girls_words = [u'Девочек', u'девочек', 'Girl', 'girl', u'девочки']
     for word in girls_words:
         if product.description.find(word) != -1:
             result_gender = Gender.objects.filter(gender='female').first()
@@ -162,7 +134,7 @@ def suggest_count(product):
         return count
     elif product.seller == Seller.objects.get(name="Detmir") or \
             product.seller == Seller.objects.get(name="Akusherstvo"):
-        if product.description.find('шт') != -1:
+        if product.description.find(u'шт') != -1:
             split_by_count = product.description.split(u'шт')
             split_by_space = split_by_count[0].split()
             result = split_by_space[-1:]
