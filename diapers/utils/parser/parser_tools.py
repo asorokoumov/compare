@@ -14,6 +14,8 @@ logger = logging.getLogger('compare')
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 shop_xpath = ConfigObj(os.path.join(BASE, 'data_config/shop_xpath.ini'))
 shop_urls = ConfigObj(os.path.join(BASE, 'data_config/shop_urls.ini'))
+chrome_driver_path = os.path.join(BASE, 'chromedriver')
+print chrome_driver_path
 
 
 class Parser:
@@ -22,7 +24,7 @@ class Parser:
         if headless:
             options.add_argument('headless')
         options.add_argument('window-size=1200x600')
-        self.driver = webdriver.Chrome(chrome_options=options)
+        self.driver = webdriver.Chrome(executable_path=chrome_driver_path, chrome_options=options)
         self.driver.implicitly_wait(10) # seconds
         self.seller = seller
         self.scroll = scroll
