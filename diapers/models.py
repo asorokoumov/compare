@@ -88,7 +88,7 @@ class Gender (models.Model):
 
 class Product (models.Model):
     brand = models.ForeignKey(Brand)
-    series = models.ForeignKey(Series, default=None)
+    series = models.ForeignKey(Series, default=None, blank=True, null=True)
     type = models.ForeignKey(Type)
     gender = models.ForeignKey(Gender)
     size = models.CharField(max_length=200)
@@ -96,8 +96,8 @@ class Product (models.Model):
     max_weight = models.FloatField()
     count = models.IntegerField()
 
-    def __str__(self):
-        return "%s %s %s (%s - %s кг) %s шт" % \
+    def __unicode__(self):
+        return u"%s %s %s (%s - %s кг) %s шт" % \
                (self.brand, self.series, self.size, self.min_weight, self.max_weight, self.count)
 
 
