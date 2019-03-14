@@ -47,3 +47,4 @@ compare/static/
 *.pyc
 *local_settings.py
 staticfiles
+chromedriver
