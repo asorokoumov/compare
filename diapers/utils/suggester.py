@@ -11,10 +11,9 @@ brand_list = ConfigObj(os.path.join(BASE, 'data_config/brands.ini'), encoding="U
 
 def suggest_brand(product):
     brand = -1
-    if len(product.description)>0:
-        for brand in brand_list:
-            if brand.strip().lower() in product.description.strip().lower():
-                return Brand.objects.get(name=brand).id
+    for brand in brand_list:
+        if brand.strip().lower() in product.description.strip().lower():
+            return Brand.objects.get(name=brand).id
     return brand
 
 

@@ -108,26 +108,33 @@ def manual_parse_result(request):
 def manual_parse(request):
     prefiltered_products = ProductPreview.objects.filter(description__icontains='')
 
-    chosen_products = prefiltered_products.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
+    chosen_products = prefiltered_products.filter(~Q(status='done'), ~Q(status='skip'), ~Q(status='error')).order_by('?')
    #chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
     chosen_product = chosen_products.first()
     print '111-   ' + str(suggester.suggest_brand(chosen_product))
-    print chosen_product.id
-    return render(request, 'diapers/parse/manual_parse.html',
-                  {'all_brands': Brand.objects.all(),
-                   'all_series': Series.objects.filter(brand=suggester.suggest_brand(chosen_product)),
-                   'all_types': Type.objects.all(),
-                   'all_genders': Gender.objects.all(),
-                   'suggest_brand': suggester.suggest_brand(chosen_product),
-                   'suggest_series': suggester.suggest_series(chosen_product),
-                   'suggest_size': suggester.suggest_size(chosen_product),
-                   'suggest_type': suggester.suggest_type(chosen_product),
-                   'suggest_gender': suggester.suggest_gender(chosen_product),
-                   'suggest_min_weight': suggester.suggest_min_weight(chosen_product),
-                   'suggest_max_weight': suggester.suggest_max_weight(chosen_product),
-                   'suggest_count': suggester.suggest_count(chosen_product),
-                   'chosen_product': chosen_product,
-                   'progress_counter': chosen_products.count()})
+    try:
+        int(suggester.suggest_brand(chosen_product))
+
+        print chosen_product.id
+        return render(request, 'diapers/parse/manual_parse.html',
+                      {'all_brands': Brand.objects.all(),
+                       'all_series': Series.objects.filter(brand=suggester.suggest_brand(chosen_product)),
+                       'all_types': Type.objects.all(),
+                       'all_genders': Gender.objects.all(),
+                       'suggest_brand': suggester.suggest_brand(chosen_product),
+                       'suggest_series': suggester.suggest_series(chosen_product),
+                       'suggest_size': suggester.suggest_size(chosen_product),
+                       'suggest_type': suggester.suggest_type(chosen_product),
+                       'suggest_gender': suggester.suggest_gender(chosen_product),
+                       'suggest_min_weight': suggester.suggest_min_weight(chosen_product),
+                       'suggest_max_weight': suggester.suggest_max_weight(chosen_product),
+                       'suggest_count': suggester.suggest_count(chosen_product),
+                       'chosen_product': chosen_product,
+                       'progress_counter': chosen_products.count()})
+    except ValueError:
+        chosen_product.status = "error"
+        chosen_product.save()
+        return HttpResponsePermanentRedirect(reverse('diapers:manual'))
 
 
 def update_prices_and_availability(request):
