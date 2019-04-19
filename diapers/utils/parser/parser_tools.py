@@ -53,6 +53,7 @@ class Parser:
 
     def parse_page(self, url):
         self.driver.get(url)
+        time.sleep(3)
         next_url = self.get_next_url()
         self.get_items()
         print ('checked ' + str(self.items_checked))

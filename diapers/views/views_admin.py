@@ -111,7 +111,8 @@ def manual_parse(request):
     chosen_products = prefiltered_products.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
    #chosen_products = ProductPreview.objects.filter(~Q(status='done'), ~Q(status='skip')).order_by('?')
     chosen_product = chosen_products.first()
-
+    print '111-   ' + str(suggester.suggest_brand(chosen_product))
+    print chosen_product.id
     return render(request, 'diapers/parse/manual_parse.html',
                   {'all_brands': Brand.objects.all(),
                    'all_series': Series.objects.filter(brand=suggester.suggest_brand(chosen_product)),
