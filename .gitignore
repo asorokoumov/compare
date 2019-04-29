@@ -48,3 +48,4 @@ compare/static/
 *local_settings.py
 staticfiles
 chromedriver
+db.sqlite3
