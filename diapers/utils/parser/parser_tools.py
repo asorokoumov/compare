@@ -9,7 +9,7 @@ import requests
 import crutch
 from diapers.models import Brand, ProductPreview, Series, Seller, Stock, Skip
 from selenium.common.exceptions import NoSuchElementException
-
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 
 
 logger = logging.getLogger('compare')
@@ -26,7 +26,11 @@ class CatalogParser:
         if headless:
             options.add_argument('headless')
         options.add_argument('window-size=1200x600')
-        self.driver = webdriver.Chrome(executable_path=chrome_driver_path, chrome_options=options)
+        caps = DesiredCapabilities().CHROME
+        caps["pageLoadStrategy"] = "none"
+
+        self.driver = webdriver.Chrome(executable_path=chrome_driver_path, chrome_options=options,
+                                       desired_capabilities=caps)
         self.driver.implicitly_wait(10) # seconds
         self.seller = seller
         self.scroll = scroll
@@ -41,6 +45,7 @@ class CatalogParser:
         # example_url = /catalog/pampers\
         logger.debug('Parcing ' + self.seller.name + '. URL: ' + url)
         next_url = self.seller.url + url
+        logger.debug(next_url)
         while next_url:
             try:
                 next_url = self.parse_page(url=next_url)
@@ -68,17 +73,18 @@ class CatalogParser:
             self.scroll_page()
         try:
             next_url = self.driver.find_element_by_xpath(shop_xpath[self.seller.name]['next_url_xpath']).get_attribute("href")
+            logger.debug('next_url: ' + str(next_url))
         except NoSuchElementException, e:
             logger.debug("Couldn't find element during parsing items :" + str(e))
             next_url = []
         return next_url
 
     def get_items(self):
-        if self.scroll:
-            self.scroll_page()
+        logger.debug('getting items on page')
         try:
             items = self.driver.find_elements_by_xpath(shop_xpath[self.seller.name]['item_xpath'])
             for item in items:
+                self.items_checked += 1
                 item_title = item.find_element_by_xpath(shop_xpath[self.seller.name]['item_title_xpath']).text
                 item_url = item.find_element_by_xpath(shop_xpath[self.seller.name]['item_url_xpath']).get_attribute("href")
                 if not ProductPreview.objects.filter(url=item_url) and not Stock.objects.filter(
@@ -87,7 +93,6 @@ class CatalogParser:
                     ProductPreview(description=description, seller=self.seller, url=item_url,
                                    status="new").save()
                     self.items_added += 1
-                    self.items_checked += 1
                 else:
                     if Skip.objects.filter(url=item_url):
                         logger.debug('Skip has that url: ' + str(item_url))
@@ -101,13 +106,19 @@ class CatalogParser:
             logger.debug("Couldn't find element during parsing items :" + str(e))
 
     def scroll_page(self):
-        while True:
-            items = self.driver.find_elements_by_xpath(shop_xpath[self.seller.name]['item_xpath'])
-            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        for x in range(3):
+            self.driver.execute_script('window.scrollTo({top: document.body.scrollHeight, behavior: "smooth" });')
             time.sleep(1)
-            items_after_scroll = self.driver.find_elements_by_xpath(shop_xpath[self.seller.name]['item_xpath'])
-            if len(items) == len(items_after_scroll):
-                break
+
+#        while True:
+#            logger.debug('Scrolling')
+#            items = self.driver.find_elements_by_xpath(shop_xpath[self.seller.name]['item_xpath'])
+#
+#            self.driver.execute_script('window.scrollTo({top: document.body.scrollHeight, behavior: "smooth" });')
+#            time.sleep(1)
+#            items_after_scroll = self.driver.find_elements_by_xpath(shop_xpath[self.seller.name]['item_xpath'])
+#            if len(items) == len(items_after_scroll):
+#                break
 
 
 class ItemPageParser:

@@ -12,7 +12,8 @@ from diapers.utils.parser import crutch
 
 
 def index(request):
-    brands = Brand.objects.filter(~Q(name='Unknown_brand')).order_by('name')
+#    brands = Brand.objects.filter(~Q(name='Unknown_brand')).order_by('name')
+    brands = Brand.objects.filter(Q(name='Pampers'), Q(name='Huggies'),)
     for brand in brands:
         if not len(Stock.objects.filter(product=Product.objects.filter(brand=brand))):
             brands = brands.filter(~Q(pk=brand.id))

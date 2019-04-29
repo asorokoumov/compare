@@ -23,12 +23,12 @@ def parse_seller(seller):
     if seller.name == 'Korablik':
         parser = CatalogParser(seller=seller, headless=False, is_next_url_full=True, scroll=False)
     elif seller.name == 'Ozon':
-        parser = CatalogParser(seller=seller, headless=True, is_next_url_full=True, scroll=True)
+        parser = CatalogParser(seller=seller, headless=False, is_next_url_full=True, scroll=True)
     elif seller.name == 'Akusherstvo':
         parser = CatalogParser(seller=seller, headless=True, is_next_url_full=True, scroll=False)
     else:
         # Detmir
-        parser = CatalogParser(seller=seller, headless=False, is_next_url_full=True, scroll=False)
+        parser = CatalogParser(seller=seller, headless=False, is_next_url_full=True, scroll=True)
 
     category_urls = shop_urls[seller.name]
     if type(category_urls) is str:
