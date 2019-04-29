@@ -1,8 +1,9 @@
 # coding=utf-8
 import urllib2
-from lxml import etree
+from lxml import etree, html
 from diapers.models import Brand, ProductPreview, Series, Seller, Stock
 from parser_tools import *
+
 
 
 BASE = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -20,14 +21,14 @@ logger = logging.getLogger('compare')
 
 def parse_seller(seller):
     if seller.name == 'Korablik':
-        parser = Parser(seller=seller, headless=False, is_next_url_full=True, scroll=False)
+        parser = CatalogParser(seller=seller, headless=False, is_next_url_full=True, scroll=False)
     elif seller.name == 'Ozon':
-        parser = Parser(seller=seller, headless=True, is_next_url_full=True, scroll=True)
+        parser = CatalogParser(seller=seller, headless=True, is_next_url_full=True, scroll=True)
     elif seller.name == 'Akusherstvo':
-        parser = Parser(seller=seller, headless=True, is_next_url_full=True, scroll=False)
+        parser = CatalogParser(seller=seller, headless=True, is_next_url_full=True, scroll=False)
     else:
         # Detmir
-        parser = Parser(seller=seller, headless=False, is_next_url_full=True, scroll=False)
+        parser = CatalogParser(seller=seller, headless=False, is_next_url_full=True, scroll=False)
 
     category_urls = shop_urls[seller.name]
     if type(category_urls) is str:
@@ -39,21 +40,25 @@ def parse_seller(seller):
 
 
 def get_prices_and_availability():
+
     # get prices from shops for stock
     item_count = 0
     logger.debug('Updating prices...')
     stock_objects = Stock.objects.all()
+    parser = ItemPageParser(headless=True)
     for stock_object in stock_objects:
         logger.debug('Getting prices for ' + str(stock_object.id) + ' ' + str(stock_object.url))
         try:
-            page = requests.get(stock_object.seller.url + stock_object.url)
-            tree = html.fromstring(page.text)
+            parser.get_price(stock_object=stock_object)
+
+           # page = requests.get(stock_object.url)
+           # tree = html.fromstring(page.text)
             # TODO add checking availability
 #            stock_object.in_stock = is_in_stock(tree=tree, stock_object=stock_object)
-            get_item_prices(tree=tree, stock_object=stock_object)
-        except (requests.exceptions.ReadTimeout, IndexError, requests.exceptions.ConnectionError):
+           # get_item_prices(tree=tree, stock_object=stock_object)
+        except (requests.exceptions.ReadTimeout, IndexError, requests.exceptions.ConnectionError) as e:
             logger.debug('Error during prices update for stock_object ' + str(stock_object.id) + ' '
-                         + str(stock_object.url))
+                         + str(stock_object.url)+ '  ' + str(e))
             stock_object.is_visible = False
 
         stock_object.save()
@@ -64,16 +69,17 @@ def get_prices_and_availability():
 
 def get_item_prices(tree, stock_object):
     price = tree.xpath(shop_xpath[stock_object.seller.name]['price_xpath'])
+    logger.debug(price[0])
     price = price[0].replace(" ", "")
     try:
         # TODO add checking price before discount
         stock_object.price_full = float(price)
         stock_object.price_unit = float(price) / stock_object.product.count
         stock_object.is_visible = True
-    except ValueError:
+    except ValueError as e:
         stock_object.is_visible = False
         logger.debug('ValueError during prices update for stock_object ' + str(stock_object.id) + ' '
-                     + str(stock_object.url))
+                     + str(stock_object.url) + '  ' + str(e))
 
 
 def is_in_stock(tree, stock_object):

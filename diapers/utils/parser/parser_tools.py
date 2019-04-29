@@ -1,3 +1,5 @@
+# coding=utf-8
+
 from selenium import webdriver
 from configobj import ConfigObj
 import os.path
@@ -18,7 +20,7 @@ chrome_driver_path = os.path.join(BASE, 'chromedriver')
 print chrome_driver_path
 
 
-class Parser:
+class CatalogParser:
     def __init__(self, headless, seller, is_next_url_full, scroll):
         options = webdriver.ChromeOptions()
         if headless:
@@ -106,3 +108,38 @@ class Parser:
             items_after_scroll = self.driver.find_elements_by_xpath(shop_xpath[self.seller.name]['item_xpath'])
             if len(items) == len(items_after_scroll):
                 break
+
+
+class ItemPageParser:
+
+    def __init__(self, headless):
+        options = webdriver.ChromeOptions()
+        if headless:
+            options.add_argument('headless')
+        options.add_argument('window-size=1200x600')
+        self.driver = webdriver.Chrome(executable_path=chrome_driver_path, chrome_options=options)
+        self.driver.implicitly_wait(10)
+
+        self.items_checked = 0
+        pass
+
+
+    def get_price(self, stock_object):
+        try:
+            self.driver.get(stock_object.url)
+            price = self.driver.find_element_by_xpath(shop_xpath[stock_object.seller.name]['price_xpath']).text
+            price = price.replace(" ", "")
+            price = price.replace("&nbsp", "")
+            price = price.replace(u"₽", "")
+            logger.debug(price)
+
+            # TODO add checking price before discount
+            stock_object.price_full = float(price)
+            stock_object.price_unit = float(price) / stock_object.product.count
+            stock_object.is_visible = True
+        except Exception as e:
+            stock_object.is_visible = False
+            logger.debug('ValueError during prices update for stock_object ' + str(stock_object.id) + ' '
+                         + str(stock_object.url) + '  ' + str(e))
+        return 1
+
