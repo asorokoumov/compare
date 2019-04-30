@@ -13,7 +13,19 @@ from diapers.utils.parser import crutch
 
 def index(request):
 #    brands = Brand.objects.filter(~Q(name='Unknown_brand')).order_by('name')
-    brands = Brand.objects.filter(Q(name='Pampers'), Q(name='Huggies'),)
+    brands = Brand.objects.filter(
+        Q(name='Merries') |
+        Q(name='Huggies') |
+        Q(name='Pampers') |
+        Q(name='Moony') |
+        Q(name='Солнце и Луна') |
+        Q(name='Goon') |
+        Q(name='Seni') |
+        Q(name='Lovular') |
+        Q(name='Yokosun') |
+        Q(name='Manuoki') |
+        Q(name='Libero')
+    )
     for brand in brands:
         if not len(Stock.objects.filter(product=Product.objects.filter(brand=brand))):
             brands = brands.filter(~Q(pk=brand.id))
