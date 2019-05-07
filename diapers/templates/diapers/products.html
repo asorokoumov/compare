@@ -68,7 +68,7 @@
             </div>
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
           <ul class="nav navbar-nav navbar-right">
-            <li><a href="#">Свяжитесь с нами</a></li>
+       <!--      <li><a href="#">Свяжитесь с нами</a></li> -->
 
           </ul>
         </div><!-- /.navbar-collapse -->
@@ -142,7 +142,7 @@
                             <td>{{ stock_item.product.count }} шт.</td>
                             <td>{{ stock_item.price_full|floatformat }} руб.</td>
                             <td>{{ stock_item.price_unit|floatformat:-2 }} руб.</td>
-                            <td><a onclick="yaCounter39130858.reachGoal('move_to_seller'); return true; fbq('track', 'Lead');"   href="{{ stock_item.url }}"><u>{{ stock_item.seller.name_rus }}</u></a></td>
+                            <td><a onclick="yaCounter39130858.reachGoal('move_to_seller'); return true; fbq('track', 'Lead');"  target="_blank" href="{{ stock_item.url }}"><u>{{ stock_item.seller.name_rus }}</u></a></td>
                         </tr>
                     {% endfor %}
                 </table>
