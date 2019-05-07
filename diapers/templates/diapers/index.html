@@ -84,7 +84,7 @@
             <h1 class="cover-heading">Поиск дешевых подгузников</h1>
             <p class="lead">Легкий способ найти лучшую цену</p>
             <p class="lead">
-              <form class="form-horizontal" id="search_form" action="{% url 'diapers:search' %}" method="post">
+              <form class="form-horizontal" id="search_form" action="{% url 'diapers:search' %}" method="post" target="_blank">
                  {% csrf_token %}
                 <div class="form-group">
                   <div class="row">
