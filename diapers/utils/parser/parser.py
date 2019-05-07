@@ -45,7 +45,7 @@ def get_prices_and_availability():
     item_count = 0
     logger.debug('Updating prices...')
     stock_objects = Stock.objects.all()
-    parser = ItemPageParser(headless=True)
+    parser = ItemPageParser(headless=False)
     for stock_object in stock_objects:
         logger.debug('Getting prices for ' + str(stock_object.id) + ' ' + str(stock_object.url))
         try:
@@ -78,7 +78,7 @@ def get_item_prices(tree, stock_object):
         stock_object.is_visible = True
     except ValueError as e:
         stock_object.is_visible = False
-        logger.debug('ValueError during prices update for stock_object ' + str(stock_object.id) + ' '
+        logger.debug('(get_item_prices) ValueError during prices update for stock_object ' + str(stock_object.id) + ' '
                      + str(stock_object.url) + '  ' + str(e))
 
 

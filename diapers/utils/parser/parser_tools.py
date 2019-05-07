@@ -150,7 +150,7 @@ class ItemPageParser:
             stock_object.is_visible = True
         except Exception as e:
             stock_object.is_visible = False
-            logger.debug('ValueError during prices update for stock_object ' + str(stock_object.id) + ' '
+            logger.debug('(get_price) ValueError during prices update for stock_object ' + str(stock_object.id) + ' '
                          + str(stock_object.url) + '  ' + str(e))
         return 1
 
